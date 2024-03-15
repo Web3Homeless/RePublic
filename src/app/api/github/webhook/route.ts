@@ -1,7 +1,6 @@
 // pages/api/github/webhook.ts
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { Webhooks, createNodeMiddleware } from "@octokit/webhooks";
+import { Webhooks } from "@octokit/webhooks";
 import { Octokit } from "@octokit/rest";
 import { NextRequest } from "next/server";
 import { createAppAuth } from "@octokit/auth-app";

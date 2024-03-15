@@ -1,4 +1,5 @@
 import React from "react";
+import OrgNavbar from "~/components/core/organisation/org-navbar";
 import ProjectNavbar from "~/components/core/project/project-navbar";
 
 export default function Page({
@@ -8,11 +9,12 @@ export default function Page({
 }) {
   return (
     <div>
-      <ProjectNavbar
+      <OrgNavbar
         projectName={params.projectId}
         orgName={params.orgId}
-      ></ProjectNavbar>
-      Page on {params.orgId} and {params.projectId}
+      ></OrgNavbar>
+      PROJECTS Page on {params.orgId} and {params.projectId}
+      <div></div>
     </div>
   );
 }

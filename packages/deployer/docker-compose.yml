@@ -1,0 +1,12 @@
+version: "3"
+services:
+  api_server:
+    build: .
+
+    environment:
+      TZ: Europe/Moscow
+
+    command: sh -c "pnpm star"
+    ports:
+      - "38080:8080"
+    restart: unless-stopped

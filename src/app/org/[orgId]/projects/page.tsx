@@ -1,5 +1,6 @@
 import React from "react";
 import OrgNavbar from "~/components/core/organisation/org-navbar";
+import ProjectCollection from "~/components/core/project/project-collection";
 import ProjectNavbar from "~/components/core/project/project-navbar";
 
 export default function Page({
@@ -14,6 +15,7 @@ export default function Page({
         orgName={params.orgId}
       ></OrgNavbar>
       PROJECTS Page on {params.orgId} and {params.projectId}
+      <ProjectCollection></ProjectCollection>
       <div></div>
     </div>
   );

@@ -86,7 +86,7 @@ export const githubRouter = createTRPCRouter({
     console.log(repos);
 
     return {
-      repos: repos,
+      repos: repos?.data,
     };
   }),
 });
@@ -99,10 +99,10 @@ async function listInstallationsForUser(octokit: Octokit) {
       },
     });
 
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error fetching installations for user:", error);
-    return [];
+    return null;
   }
 }
 

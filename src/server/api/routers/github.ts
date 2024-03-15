@@ -61,26 +61,32 @@ export const githubRouter = createTRPCRouter({
       where: {
         user_id: account?.providerAccountId,
       },
+      orderBy: {
+        id: "desc",
+      },
     });
 
     console.log(installation);
+    console.log("SOME SOME SOME");
 
     const token = await getInstallationAccessToken(
       installation!.installation_id,
     );
 
-    console.log(token);
+    console.log("TOKEN");
+    console.log(token.token);
+    console.log("AFTER TOKEN");
 
     const octokit = new Octokit({
       auth: `${token.token}`,
     });
 
-    const aa = await listInstallationsForUser(octokit);
+    const repos = await listInstallationsForUser(octokit);
 
-    console.log(aa);
+    console.log(repos);
 
     return {
-      greeting: aa,
+      repos: repos,
     };
   }),
 });

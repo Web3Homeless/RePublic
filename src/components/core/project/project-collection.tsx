@@ -35,7 +35,9 @@ export default function ProjectCollection({}: Props) {
     return <div>Is loading.......</div>;
   }
 
-  const repos = data?.repos.map((r) => <div key={r.id}>{r.name}</div>);
+  const repos = data?.repos!.repositories.map((r) => (
+    <div key={r.id}>{r.name}</div>
+  ));
 
   return (
     <div className="flex flex-col gap-10 px-10 py-5">

@@ -71,3 +71,9 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+model GithubInstallation {
+    id              String @id @default(cuid())
+    user_id         String
+    installation_id String
+}

@@ -14,6 +14,21 @@ export const projectRouter = createTRPCRouter({
     };
   }),
 
+  projectById: publicProcedure
+    .input(z.object({ projectId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const project = await ctx.db.userProject.findMany({
+        where: {
+          user_id: ctx.session?.user.id,
+          id: input.projectId,
+        },
+      });
+
+      return {
+        project: project,
+      };
+    }),
+
   createProject: publicProcedure
     .input(z.object({ owner: z.string(), repo: z.string() }))
     .mutation(async ({ ctx, input }) => {

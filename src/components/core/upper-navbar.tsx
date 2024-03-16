@@ -19,7 +19,9 @@ export default function UpperNavbar({ orgName, projectName }: Props) {
       <div className="flex items-center space-x-4">
         <div className="flex gap-4 text-white">
           {/* Logo and project name here */}
-          <span className="font mr-5 font-extrabold">RE :</span>
+          <span className="font mr-5 font-extrabold">
+            <span className="text-red-500">RE:</span> PUBLIC
+          </span>
           <Link className="font-bold" href={`/org/${orgName}`}>
             {orgName}
           </Link>

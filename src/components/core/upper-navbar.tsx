@@ -22,8 +22,8 @@ export default function UpperNavbar({ orgName, projectName }: Props) {
           {/* Logo and project name here */}
           <span className="font mr-5 flex items-center font-extrabold">
             <Link href="/">
-              <span className="text-red-500">RE:</span>{" "}
-              <span className="hover:text-red-500">PUBLIC</span>
+              <span className="font-extrabold text-red-500">RE:</span>{" "}
+              <span className="text-sm hover:text-red-500">PUBLIC</span>
             </Link>
           </span>
           {orgName != null && orgName != "" && (

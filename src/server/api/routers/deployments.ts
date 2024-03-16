@@ -51,6 +51,20 @@ export const deploymentsRouter = createTRPCRouter({
       };
     }),
 
+  getDeploymentLogs: publicProcedure
+    .input(z.object({ deploymentId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const logs = await ctx.db.deploymentLog.findMany({
+        where: {
+          id: input.deploymentId,
+        },
+      });
+
+      return {
+        logs: logs,
+      };
+    }),
+
   getMainDeploy: publicProcedure
     .input(z.object({ projectId: z.string() }))
     .query(async ({ ctx, input }) => {

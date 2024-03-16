@@ -118,3 +118,10 @@ model DeploymentOutbox {
     id           String @id @default(cuid())
     deploymentId String
 }
+
+model DeploymentLog {
+    id           String @id @default(cuid())
+    timestamp    DateTime
+    text         String
+    deploymentId String
+}

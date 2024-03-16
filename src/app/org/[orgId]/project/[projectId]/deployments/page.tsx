@@ -1,11 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import ProjectNavbar from "~/components/core/project/project-navbar";
 
 import { Badge } from "~/components/ui/badge";
 import Loader from "~/components/ui/loaders/loader";
 import { api } from "~/trpc/react";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "~/components/ui/collapsible";
 
 export default function Page({
   params,
@@ -112,32 +124,111 @@ function DeploymentComponent(props: DeploymentProps) {
     },
     {
       refetchInterval: (data) =>
-        data && data.status !== "success" ? 2000 : false,
+        data && data.status !== "Success" ? 2000 : false,
     },
   );
 
   const currentStatus = query.data?.status || props.status;
 
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <tr className="">
-      <td className="whitespace-nowrap px-6 py-4">{props.id}</td>
-      <td className="whitespace-nowrap px-6 py-4">{props.env}</td>
-      <td className="whitespace-nowrap px-6 py-4">
-        {StatusToBadge(currentStatus)}
-      </td>
-      <td className="whitespace-nowrap px-6 py-4">{props.branch}</td>
-      <td className="whitespace-nowrap px-6 py-4">{props.lastUpdated}</td>
-      <td className="whitespace-nowrap px-6 py-4">{props.details}</td>
-      <td className="whitespace-nowrap px-6 py-4">{props.updatedBy}</td>
-      <td className="whitespace-nowrap px-6 py-4">
-        <MoreVerticalIcon className="" />
+    <>
+      <tr onClick={() => setIsOpen(!isOpen)}>
+        <td className="whitespace-nowrap px-6 py-4">{props.id}</td>
+        <td className="whitespace-nowrap px-6 py-4">{props.env}</td>
+        <td className="whitespace-nowrap px-6 py-4">
+          {StatusToBadge(currentStatus)}
+        </td>
+        <td className="whitespace-nowrap px-6 py-4">{props.branch}</td>
+        <td className="whitespace-nowrap px-6 py-4">{props.lastUpdated}</td>
+        <td className="whitespace-nowrap px-6 py-4">{props.details}</td>
+        <td className="whitespace-nowrap px-6 py-4">
+          <Collapsible>
+            <CollapsibleTrigger>
+              Can I use this in my project?
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              Yes. Free to use for personal and commercial projects. No
+              attribution required.
+            </CollapsibleContent>
+          </Collapsible>
+
+          {props.updatedBy}
+        </td>
+        <td className="whitespace-nowrap px-6 py-4">
+          <Popover>
+            <PopoverTrigger>
+              <MoreVerticalIcon className="" />
+            </PopoverTrigger>
+            <PopoverContent>Place content for the popover here.</PopoverContent>
+          </Popover>
+        </td>
+      </tr>
+      {isOpen && <LogCollection></LogCollection>}
+    </>
+  );
+}
+
+type LogCollectionProps = {
+  deploymentId: string;
+};
+
+function LogCollection(props: LogCollectionProps) {
+  const logs = api.deployments.getDeploymentLogs.useQuery(
+    {
+      deploymentId: props.deploymentId,
+    },
+    {
+      refetchInterval: 3000,
+    },
+  );
+
+  const logComponents = !logs.isLoading ? (
+    logs.data.logs.map((x) => {
+      return (
+        <DeploymentLog
+          key={x.id}
+          text={x.text}
+          timestamp={x.timestamp.toISOString()}
+        ></DeploymentLog>
+      );
+    })
+  ) : (
+    <></>
+  );
+
+  return (
+    <tr>
+      <td colSpan="100%" className="bg-slate-900 p-5">
+        <h2 className="mb-10">Deployment Logs</h2>
+        <div className="flex max-h-40 flex-col gap-5 overflow-scroll  overflow-x-hidden rounded-md bg-slate-800 p-2">
+          {/* <DeploymentLog text="123" timestamp="123"></DeploymentLog>
+          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
+          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
+          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
+          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
+          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
+          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
+          <DeploymentLog text="123" timestamp="123"></DeploymentLog> */}
+          {logComponents}
+        </div>
       </td>
     </tr>
   );
 }
 
+type LogProps = {
+  text: string;
+  timestamp: string;
+};
+
+function DeploymentLog(props: LogProps) {
+  return <p>{props.text}</p>;
+}
+
 function StatusToBadge(status: string) {
-  if (status == "Error") {
+  if (status == "Failed") {
     return (
       <Badge className="bg-red-500" variant="default">
         {status}

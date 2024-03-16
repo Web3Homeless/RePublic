@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:18-buster
+FROM node:18-bookworm
 
 ENV PNPM_HOME="/pnpm"
 
@@ -15,5 +15,5 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN npm link
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
-RUN npm i -g near-cli-rs cargo-near
-RUN cargo-near near create-dev-account use-specific-account-id republic.testnet autogenerate-new-keypair save-to-keychain network-config testnet create
+# RUN curl --proto '=https' --tlsv1.2 -LsSf https://github.com/near/near-cli-rs/releases/latest/download/near-cli-rs-installer.sh | sh
+RUN npm install -g near-cli 

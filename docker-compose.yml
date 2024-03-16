@@ -1,0 +1,12 @@
+version: "3"
+services:
+  near_worker:
+    build: .
+    volumes:
+      - .:/republic
+
+    environment:
+      TZ: Europe/Moscow
+
+    command: sh -c "pnpm --filter=deployer build && pnpm --filter=deployer worker"
+    restart: unless-stopped

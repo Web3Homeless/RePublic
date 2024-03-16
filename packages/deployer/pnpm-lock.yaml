@@ -17,15 +17,9 @@ dependencies:
   decompress:
     specifier: ^4.2.1
     version: 4.2.1
-  republic:
-    specifier: workspace:../*
-    version: link:../*
   ts-md5:
     specifier: ^1.3.1
     version: 1.3.1
-  typescript:
-    specifier: ^5.4.2
-    version: 5.4.2
   uuid:
     specifier: ^9.0.1
     version: 9.0.1
@@ -55,6 +49,9 @@ devDependencies:
   eslint-plugin-prettier:
     specifier: ^5.1.3
     version: 5.1.3(eslint-config-prettier@9.1.0)(eslint@8.57.0)(prettier@3.2.5)
+  typescript:
+    specifier: ^5.4.2
+    version: 5.4.2
 
 packages:
 
@@ -1371,7 +1368,6 @@ packages:
     resolution: {integrity: sha512-+2/g0Fds1ERlP6JsakQQDXjZdZMM+rqpamFZJEKh4kwTIn3iDkgKtby0CeNd5ATNZ4Ry1ax15TMx0W2V+miizQ==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: false
 
   /unbzip2-stream@1.4.3:
     resolution: {integrity: sha512-mlExGW4w71ebDJviH16lQLtZS32VKqsSfk80GCfUlwT/4/hNRFsoscrF/c++9xinkMzECL1uL9DDwXqFWkruPg==}

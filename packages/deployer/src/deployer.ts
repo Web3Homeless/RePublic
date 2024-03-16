@@ -20,6 +20,15 @@ const worker = async () => {
     return;
   }
 
+  await db.userDeployment.update({
+    data: {
+      status: 'Building',
+    },
+    where: {
+      id: task?.id,
+    },
+  });
+
   console.log(task);
 
   const uuidTag = uuid.v4();
@@ -46,9 +55,11 @@ const worker = async () => {
       deploymenttransaction: deployment.txId,
       status: 'Success',
     },
+    where: {
+      id: task?.id,
+    },
   });
 
-  // deployment.
 };
 
 type Deployment = {

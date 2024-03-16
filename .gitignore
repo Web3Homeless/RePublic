@@ -43,6 +43,7 @@ yarn-error.log*
 pkcs8.key
 
 packages/deployer/temp
+packages/deployer/arch
 packages/deployer/node_modules
 packages/deployer/dist
 *.key

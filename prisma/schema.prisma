@@ -91,6 +91,7 @@ model UserDeployment {
     lastUpdated     DateTime
     details         String
     updatedBy       String
+    status          String
 }
 
 model UserProject {
@@ -101,8 +102,9 @@ model UserProject {
 }
 
 model BranchMapper {
-    id         String @id @default(cuid())
-    user_id    String 
-    project_id String
-    brach      String
+    id           String @id @default(cuid())
+    user_id      String 
+    project_id   String
+    branch       String
+    deployTarget String
 }

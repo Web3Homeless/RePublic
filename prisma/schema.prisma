@@ -80,22 +80,23 @@ model GithubInstallation {
 }
 
 model UserDeployment {
-    id              String @id @default(cuid())
-    user_id         String
-    project_id      String
-    owner           String
-    repoName        String
-    deployedAddress String
-    chainId         String
-    environment     String
-    branch          String 
-    lastUpdated     DateTime
-    details         String
-    updatedBy       String
-    status          String
-    archiveUrl      String
-    installationId  String
-    zipArchive      Bytes
+    id                        String @id @default(cuid())
+    user_id                   String
+    project_id                String
+    owner                     String
+    repoName                  String
+    deployedAddress           String
+    deploymenttransaction     String
+    chainId                   String
+    environment               String
+    branch                    String 
+    lastUpdated               DateTime
+    details                   String
+    updatedBy                 String
+    status                    String
+    archiveUrl                String
+    installationId            String
+    zipArchive                Bytes
 }
 
 model UserProject {

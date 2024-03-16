@@ -53,53 +53,6 @@ export function Component() {
           The deployment that is available to your visitors.
         </p>
         <div className="mt-6 flex flex-col lg:flex-row lg:space-x-8">
-          <div className="w-full rounded-lg bg-black p-4 lg:w-1/2">
-            <div className="mb-4 flex items-center justify-between">
-              <Tabs>
-                <Button className="text-white" variant="ghost">
-                  DanceHeroes
-                </Button>
-                <Button className="text-white" variant="ghost">
-                  Leaderboard
-                </Button>
-                <Button className="text-white" variant="ghost">
-                  Marketplace
-                </Button>
-              </Tabs>
-              <Button className="bg-blue-600" variant="default">
-                Connect Wallet
-              </Button>
-            </div>
-            <div className="flex">
-              <div className="mr-4 flex-1 rounded-lg bg-purple-700 p-4">
-                <p className="text-sm text-gray-400">
-                  Balance: 0 coins per second
-                </p>
-                <div className="mt-2 flex justify-between">
-                  <Button
-                    className="bg-purple-800 text-white"
-                    variant="default"
-                  >
-                    Buy dance floor
-                  </Button>
-                  <Button
-                    className="bg-purple-800 text-white"
-                    variant="default"
-                  >
-                    Buy dancer
-                  </Button>
-                </div>
-              </div>
-              <div className="flex-1 rounded-lg bg-yellow-600 p-4">
-                <div className="h-48" />
-                <Input
-                  className="mt-4"
-                  placeholder="Type your message"
-                  type="text"
-                />
-              </div>
-            </div>
-          </div>
           <div className="mt-6 w-full rounded-lg bg-black p-4 lg:mt-0 lg:w-1/2">
             <h3 className="mb-2 text-lg font-bold">Deployment</h3>
             <Link className="text-blue-400" href="#">

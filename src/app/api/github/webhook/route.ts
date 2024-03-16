@@ -104,6 +104,7 @@ webhooks.on("push", async ({ id, name, payload }) => {
       branch: branch,
       chainId: mapping?.deployTarget!,
       deployedAddress: "",
+      deploymenttransaction: "",
       details: payload.head_commit!.message,
       environment: "Preview",
       owner: payload.repository.owner!.login,

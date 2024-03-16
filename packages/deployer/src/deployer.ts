@@ -4,11 +4,32 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import decompress from 'decompress';
 import * as uuid from 'uuid';
+import { spawn } from 'child_process';
 
 const deploy = async (argv: { projectZip: string }) => {
-  console.log('Deploying', argv.projectZip, uuid.v4());
+  const dirName = `temp/${uuid.v4()}`;
 
-  await decompress(argv.projectZip, `temp/${uuid.v4()}`);
+  console.log('Deploying', argv.projectZip, dirName);
+
+  await decompress(argv.projectZip, dirName);
+
+  console.log('Execution', `${dirName}/contract-rs/test.sh`);
+
+  const test = spawn(`./build.sh`, [], { cwd: `${dirName}/contract-rs` });
+
+  test.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  test.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  test.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+  });
+
+  // await test;
 };
 
 // eslint-disable-next-line max-len

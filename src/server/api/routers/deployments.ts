@@ -28,6 +28,9 @@ export const deploymentsRouter = createTRPCRouter({
           installationId: true,
           zipArchive: false,
         },
+        orderBy: {
+          lastUpdated: "desc",
+        },
       });
 
       console.log(res);
@@ -54,11 +57,15 @@ export const deploymentsRouter = createTRPCRouter({
   getDeploymentLogs: publicProcedure
     .input(z.object({ deploymentId: z.string() }))
     .query(async ({ ctx, input }) => {
+      console.log("LOGS!!");
+
       const logs = await ctx.db.deploymentLog.findMany({
         where: {
-          id: input.deploymentId,
+          deploymentId: input.deploymentId,
         },
       });
+
+      console.log(logs);
 
       return {
         logs: logs,

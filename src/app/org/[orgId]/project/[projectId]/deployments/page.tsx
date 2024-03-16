@@ -36,7 +36,11 @@ export default function Page({
           key={x.id}
           branch={x.branch}
           details={x.details}
-          lastUpdated={x.lastUpdated.toDateString()}
+          lastUpdated={
+            x.lastUpdated.toDateString() +
+            " " +
+            x.lastUpdated.toLocaleTimeString()
+          }
           status={x.status}
           env={x.environment}
           updatedBy={x.updatedBy}
@@ -118,13 +122,17 @@ type DeploymentProps = {
 };
 
 function DeploymentComponent(props: DeploymentProps) {
+  console.log(props.id);
+
   const query = api.deployments.getDeploymentStatus.useQuery(
     {
       deploymentId: props.id,
     },
     {
-      refetchInterval: (data) =>
-        data && data.status !== "Success" ? 2000 : false,
+      gcTime: 100000,
+      staleTime: 100000,
+      // refetchInterval: (data) =>
+      //   data && data.status !== "Success" ? 2000 : false,
     },
   );
 
@@ -143,19 +151,7 @@ function DeploymentComponent(props: DeploymentProps) {
         <td className="whitespace-nowrap px-6 py-4">{props.branch}</td>
         <td className="whitespace-nowrap px-6 py-4">{props.lastUpdated}</td>
         <td className="whitespace-nowrap px-6 py-4">{props.details}</td>
-        <td className="whitespace-nowrap px-6 py-4">
-          <Collapsible>
-            <CollapsibleTrigger>
-              Can I use this in my project?
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              Yes. Free to use for personal and commercial projects. No
-              attribution required.
-            </CollapsibleContent>
-          </Collapsible>
-
-          {props.updatedBy}
-        </td>
+        <td className="whitespace-nowrap px-6 py-4">{props.updatedBy}</td>
         <td className="whitespace-nowrap px-6 py-4">
           <Popover>
             <PopoverTrigger>
@@ -165,7 +161,7 @@ function DeploymentComponent(props: DeploymentProps) {
           </Popover>
         </td>
       </tr>
-      {isOpen && <LogCollection></LogCollection>}
+      {isOpen && <LogCollection deploymentId={props.id}></LogCollection>}
     </>
   );
 }
@@ -180,7 +176,7 @@ function LogCollection(props: LogCollectionProps) {
       deploymentId: props.deploymentId,
     },
     {
-      refetchInterval: 3000,
+      //refetchInterval: 10_000,
     },
   );
 

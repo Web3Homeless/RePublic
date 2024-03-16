@@ -122,6 +122,6 @@ model DeploymentOutbox {
 model DeploymentLog {
     id           String @id @default(cuid())
     timestamp    DateTime
-    text         String
+    text         String @db.LongText
     deploymentId String
 }

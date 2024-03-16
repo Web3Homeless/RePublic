@@ -23,7 +23,7 @@ export default function ProjectCard({ name }: Props) {
 
   return (
     <Card
-      className="w-[350px] text-white"
+      className="w-[350px] text-white hover:outline hover:outline-1 hover:outline-white"
       onClick={() => {
         console.log(name);
         router.push(`project/${name}`);

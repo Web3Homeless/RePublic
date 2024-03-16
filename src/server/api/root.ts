@@ -3,6 +3,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { githubRouter } from "./routers/github";
 import { projectRouter } from "./routers/project";
 import { settingsRouter } from "./routers/settings";
+import { deploymentsRouter } from "./routers/deployments";
 
 /**
  * This is the primary router for your server.
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
   github: githubRouter,
   project: projectRouter,
   settings: settingsRouter,
+  deployments: deploymentsRouter,
 });
 
 // export type definition of API

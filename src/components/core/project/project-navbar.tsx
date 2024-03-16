@@ -31,7 +31,7 @@ export default function ProjectNavbar({ orgName, projectName }: Props) {
       <UpperNavbar orgName={orgName} projectName={projectName}></UpperNavbar>
 
       {/* Subnavbar */}
-      <div className="flex justify-start space-x-4 px-6 py-3">
+      <div className="flex justify-start space-x-4 border-b px-6 py-3">
         {/* Subnav items */}
         <Link href={`/${baseUrl}`} className={linkStyles("")}>
           Overview

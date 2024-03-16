@@ -7,6 +7,8 @@ import { Button } from "~/components/ui/button";
 import Link from "next/link";
 import { Badge } from "~/components/ui/badge";
 import { api } from "~/trpc/react";
+import AppLoader from "~/components/common/app-loader";
+import Loader from "~/components/ui/loaders/loader";
 
 export default function Page({
   params,
@@ -17,10 +19,6 @@ export default function Page({
     owner: params.orgId,
     repo: params.projectId,
   });
-
-  if (repo.isLoading) {
-    return <div>Is loading</div>;
-  }
 
   return (
     <div>
@@ -46,54 +44,59 @@ export default function Page({
           <p className="mt-2 text-gray-400">
             The deployment that is available to your visitors.
           </p>
-          <div className="mt-6 flex flex-col lg:flex-row lg:space-x-8">
-            <div className="mt-6 w-full rounded-lg bg-black p-4 lg:mt-0 lg:w-1/2">
-              <h3 className="mb-2 text-lg font-bold">Deployment</h3>
-              <Link className="text-blue-400" href="#">
-                indudancers-frontend-eqf9be0hh-web3homeless.vercel.app
-              </Link>
-              <div className="mt-2 flex items-center">
-                <Link className="text-blue-400" href="#">
-                  indudancers-frontend.vercel.app
-                </Link>
-                <Badge className="ml-2" variant="secondary">
-                  +2
-                </Badge>
-              </div>
-              <div className="mt-4">
-                <h4 className="text-lg font-bold">Domains</h4>
-                <p className="text-gray-400">indudancers-frontend.vercel.app</p>
-              </div>
-              <div className="mt-4">
-                <h4 className="text-lg font-bold">Status</h4>
-                <div className="flex items-center">
-                  <Badge className="bg-green-600" variant="secondary">
-                    Ready
-                  </Badge>
-                  <p className="ml-2 text-gray-400">
-                    Created 97d ago by MadLime
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4">
-                <h4 className="text-lg font-bold">Source</h4>
-                <div className="flex items-center">
-                  <GitBranchIcon className="text-gray-400" />
-                  <p className="ml-2 text-gray-400">main</p>
-                </div>
-                <div className="mt-2 flex items-center">
-                  <GitCommitIcon className="text-gray-400" />
-                  <p className="ml-2 text-gray-400">134dfdf Update README.md</p>
-                </div>
-              </div>
-              <div className="mt-4 flex space-x-4">
-                <Button variant="outline">Build Logs</Button>
-                <Button variant="outline">Runtime Logs</Button>
-                <Button variant="outline">Instant Rollback</Button>
-              </div>
-            </div>
-          </div>
+          {repo.isLoading && <Loader></Loader>}
+          {!repo.isLoading && <DeploymentCard></DeploymentCard>}
         </main>
+      </div>
+    </div>
+  );
+}
+
+function DeploymentCard() {
+  return (
+    <div className="mt-6 flex flex-col lg:flex-row lg:space-x-8">
+      <div className="mt-6 w-full rounded-lg bg-black p-4 lg:mt-0 lg:w-1/2">
+        <h3 className="mb-2 text-lg font-bold">Deployment</h3>
+        <Link className="text-blue-400" href="#">
+          indudancers-frontend-eqf9be0hh-web3homeless.vercel.app
+        </Link>
+        <div className="mt-2 flex items-center">
+          <Link className="text-blue-400" href="#">
+            indudancers-frontend.vercel.app
+          </Link>
+          <Badge className="ml-2" variant="secondary">
+            +2
+          </Badge>
+        </div>
+        <div className="mt-4">
+          <h4 className="text-lg font-bold">Domains</h4>
+          <p className="text-gray-400">indudancers-frontend.vercel.app</p>
+        </div>
+        <div className="mt-4">
+          <h4 className="text-lg font-bold">Status</h4>
+          <div className="flex items-center">
+            <Badge className="bg-green-600" variant="secondary">
+              Ready
+            </Badge>
+            <p className="ml-2 text-gray-400">Created 97d ago by MadLime</p>
+          </div>
+        </div>
+        <div className="mt-4">
+          <h4 className="text-lg font-bold">Source</h4>
+          <div className="flex items-center">
+            <GitBranchIcon className="text-gray-400" />
+            <p className="ml-2 text-gray-400">main</p>
+          </div>
+          <div className="mt-2 flex items-center">
+            <GitCommitIcon className="text-gray-400" />
+            <p className="ml-2 text-gray-400">134dfdf Update README.md</p>
+          </div>
+        </div>
+        <div className="mt-4 flex space-x-4">
+          <Button variant="outline">Build Logs</Button>
+          <Button variant="outline">Runtime Logs</Button>
+          <Button variant="outline">Instant Rollback</Button>
+        </div>
       </div>
     </div>
   );

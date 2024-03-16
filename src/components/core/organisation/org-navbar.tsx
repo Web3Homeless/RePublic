@@ -28,7 +28,7 @@ export default function OrgNavbar({ orgName, projectName }: Props) {
     <div>
       <UpperNavbar orgName={orgName} projectName={projectName}></UpperNavbar>
 
-      <div className="flex justify-start space-x-4 px-6 py-3">
+      <div className="flex justify-start space-x-4 border-b px-6 py-3">
         <Link href={`/org/${orgName}/projects`} className={linkStyles("")}>
           Projects
         </Link>

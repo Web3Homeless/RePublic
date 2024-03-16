@@ -18,17 +18,25 @@ export default function UpperNavbar({ orgName, projectName }: Props) {
     <div className="flex items-center justify-between border-b px-6 py-4">
       {/* Left side */}
       <div className="flex items-center space-x-4">
-        <div className="flex gap-4 text-white">
+        <div className="flex items-center justify-center gap-4 text-white">
           {/* Logo and project name here */}
           <span className="font mr-5 flex items-center font-extrabold">
-            <span className="text-red-500">RE:</span> PUBLIC
+            <Link href="/">
+              <span className="text-red-500">RE:</span>{" "}
+              <span className="hover:text-red-500">PUBLIC</span>
+            </Link>
           </span>
-          <Link className="font-bold" href={`/org/${orgName}`}>
+          {orgName != null && orgName != "" && (
+            <span className="flex items-center font-bold">/</span>
+          )}
+          <Link className="font-bold" href={`/org/${orgName}/projects`}>
             <Button className="px-1" variant={"link"}>
               {orgName}
             </Button>
           </Link>
-          <span className="flex items-center font-bold">/</span>{" "}
+          {projectName != null && projectName != "" && (
+            <span className="flex items-center font-bold">/</span>
+          )}
           <Link
             className="font-bold"
             href={`org/${orgName}/project/${projectName}`}

@@ -3,7 +3,6 @@ import Link from "next/link";
 import UpperNavbar from "~/components/core/upper-navbar";
 
 import { getServerAuthSession } from "~/server/auth";
-import { api } from "~/trpc/server";
 
 export default async function Home() {
   noStore();
@@ -12,7 +11,7 @@ export default async function Home() {
 
   return (
     <div>
-      <UpperNavbar></UpperNavbar>
+      <UpperNavbar orgName="" projectName=""></UpperNavbar>
       <main className="flex min-h-screen flex-col items-center justify-start text-white">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
@@ -21,24 +20,23 @@ export default async function Home() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/usage/first-steps"
+              href={`/org/${session?.user.name}`}
               target="_blank"
             >
-              <h3 className="text-2xl font-bold">First Steps →</h3>
+              <h3 className="text-2xl font-bold">Let's begin →</h3>
               <div className="text-lg">
-                Just the basics - Everything you need to know to set up your
-                database and authentication.
+                Go to your organisation settings - import project and deploy
+                contracts
               </div>
             </Link>
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href="https://create.t3.gg/en/introduction"
+              href="https://github.com/Web3Homeless/RePublic"
               target="_blank"
             >
               <h3 className="text-2xl font-bold">Documentation →</h3>
               <div className="text-lg">
-                Learn more about Create T3 App, the libraries it uses, and how
-                to deploy it.
+                Learn more about project on main github README.md page
               </div>
             </Link>
           </div>

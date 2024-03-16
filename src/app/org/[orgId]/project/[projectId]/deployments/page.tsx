@@ -1,99 +1,161 @@
+"use client";
+
 import React from "react";
 import ProjectNavbar from "~/components/core/project/project-navbar";
+
+import { Badge } from "~/components/ui/badge";
+import Loader from "~/components/ui/loaders/loader";
+import { api } from "~/trpc/react";
 
 export default function Page({
   params,
 }: {
   params: { orgId: string; projectId: string };
 }) {
+  const deployments = api.deployments.getAllDeployments.useQuery({
+    repoName: params.projectId,
+  });
+
+  const deployComponents = !deployments.isLoading ? (
+    deployments.data?.deployments.map((x) => {
+      return (
+        <DeploymentComponent
+          id={x.id}
+          key={x.id}
+          branch={x.branch}
+          details={x.details}
+          lastUpdated={x.lastUpdated.toDateString()}
+          status={x.status}
+          env={x.environment}
+          updatedBy={x.updatedBy}
+        ></DeploymentComponent>
+      );
+    })
+  ) : (
+    <></>
+  );
+
   return (
     <div>
       <ProjectNavbar
         projectName={params.projectId}
         orgName={params.orgId}
       ></ProjectNavbar>
-      <Component></Component>
-    </div>
-  );
-}
-
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/5uqcPHQqLul
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
-import { Badge } from "~/components/ui/badge";
-
-export function Component() {
-  return (
-    <div className="min-h-screen bg-[#121212] text-white">
-      <header className="border-b border-gray-700 p-10">
-        <h1 className="text-3xl font-bold">Deployments</h1>
-        <p className="mt-2 flex text-gray-400">
-          <FolderSyncIcon className="mr-2 inline text-gray-400" />
-          Continuously generated from
-          <GithubIcon className="ml-2 mr-2 inline text-gray-400" />
-          ETHIndia-Hack-2023/indudancers-frontend
-        </p>
-      </header>
-      <div className="p-6">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-700">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Environment
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Branch
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Last Updated
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Details
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Updated By
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              <tr className="bg-black">
-                <td className="whitespace-nowrap px-6 py-4">q0pknartd</td>
-                <td className="whitespace-nowrap px-6 py-4">Preview</td>
-                <td className="whitespace-nowrap px-6 py-4">
-                  <Badge className="bg-red-500" variant="default">
-                    Error
-                  </Badge>
-                </td>
-                <td className="whitespace-nowrap px-6 py-4">waku-sync</td>
-                <td className="whitespace-nowrap px-6 py-4">31s (97d ago)</td>
-                <td className="whitespace-nowrap px-6 py-4">
-                  adcdd90 sync debug
-                </td>
-                <td className="whitespace-nowrap px-6 py-4">
-                  97d ago by MadL1me
-                </td>
-                <td className="whitespace-nowrap px-6 py-4">
-                  <MoreVerticalIcon className="" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div className="min-h-screen bg-[#121212] text-white">
+        <header className="border-b border-gray-700 p-10">
+          <h1 className="text-3xl font-bold">Deployments</h1>
+          <p className="mt-2 flex text-gray-400">
+            <FolderSyncIcon className="mr-2 inline text-gray-400" />
+            Continuously genefjxted from
+            <GithubIcon className="ml-2 mr-2 inline text-gray-400" />
+            ETHIndia-Hack-2023/indudancers-frontend
+          </p>
+        </header>
+        <div className="">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-700">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Environment
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Branch
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Last Updated
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Details
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Updated By
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              {deployments.isLoading ? (
+                <Loader></Loader>
+              ) : (
+                <tbody className="divide-y">{deployComponents}</tbody>
+              )}
+            </table>
+          </div>
         </div>
       </div>
     </div>
   );
+}
+
+type DeploymentProps = {
+  id: string;
+  env: string;
+  status: string;
+  branch: string;
+  lastUpdated: string;
+  details: string;
+  updatedBy: string;
+};
+
+function DeploymentComponent(props: DeploymentProps) {
+  return (
+    <tr className="bg-black">
+      <td className="whitespace-nowrap px-6 py-4">{props.id}</td>
+      <td className="whitespace-nowrap px-6 py-4">{props.env}</td>
+      <td className="whitespace-nowrap px-6 py-4">
+        {StatusToBadge(props.status)}
+      </td>
+      <td className="whitespace-nowrap px-6 py-4">{props.branch}</td>
+      <td className="whitespace-nowrap px-6 py-4">{props.lastUpdated}</td>
+      <td className="whitespace-nowrap px-6 py-4">{props.details}</td>
+      <td className="whitespace-nowrap px-6 py-4">{props.updatedBy}</td>
+      <td className="whitespace-nowrap px-6 py-4">
+        <MoreVerticalIcon className="" />
+      </td>
+    </tr>
+  );
+}
+
+function StatusToBadge(status: string) {
+  if (status == "Error") {
+    return (
+      <Badge className="bg-red-500" variant="default">
+        {status}
+      </Badge>
+    );
+  }
+
+  if (status == "Created") {
+    return (
+      <Badge className="bg-blue-500" variant="default">
+        {status}
+      </Badge>
+    );
+  }
+
+  if (status == "Building") {
+    return (
+      <Badge className="bg-yellow-500" variant="default">
+        {status}
+      </Badge>
+    );
+  }
+
+  if (status == "Success") {
+    return (
+      <Badge className="bg-green-500-500" variant="default">
+        {status}
+      </Badge>
+    );
+  }
 }
 
 function FolderSyncIcon(props) {

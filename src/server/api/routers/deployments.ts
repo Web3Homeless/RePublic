@@ -6,33 +6,30 @@ export const deploymentsRouter = createTRPCRouter({
   getAllDeployments: publicProcedure
     .input(z.object({ repoName: z.string() }))
     .query(async ({ ctx, input }) => {
-      //   const res = await ctx.db.userDeployment.findMany({
-      //     where: {
-      //         repoName:
-      //     },
-      //   });
+      const res = await ctx.db.userDeployment.findMany({
+        where: {
+          repoName: input.repoName,
+        },
+      });
 
       return {
         deployments: res,
       };
     }),
 
-  gerDeploymentStatus: publicProcedure
+  getDeploymentStatus: publicProcedure
     .input(z.object({ deploymentId: z.string() }))
-    .query(async ({ ctx, input }) => {}),
+    .query(async ({ ctx, input }) => {
+      return {
+        a: true,
+      };
+    }),
+
+  getMainDeploy: publicProcedure
+    .input(z.object({}))
+    .query(async ({ ctx, input }) => {
+      return {
+        a: true,
+      };
+    }),
 });
-
-async function listInstallationsForUser(octokit: Octokit) {
-  try {
-    const response = await octokit.request("GET /installation/repositories", {
-      headers: {
-        accept: "application/vnd.github.machine-man-preview+json",
-      },
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Error fetching installations for user:", error);
-    return null;
-  }
-}

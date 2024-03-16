@@ -27,6 +27,7 @@ import { Input } from "~/components/ui/input";
 import AppLoader from "~/components/common/app-loader";
 import { useRouter } from "next/navigation";
 import ProjectCard from "./project-card";
+import Loader from "~/components/ui/loaders/loader";
 
 type Props = {};
 
@@ -49,10 +50,6 @@ export default function ProjectCollection({}: Props) {
 
   const listProjQuery = api.project.listProjects.useQuery();
 
-  if (isLoading) {
-    return <AppLoader></AppLoader>;
-  }
-
   const repos = data?.repos?.repositories.map((r) => (
     <SelectItem key={r.id} value={r.name}>
       {r.name}
@@ -64,7 +61,7 @@ export default function ProjectCollection({}: Props) {
   });
 
   return (
-    <div className="flex flex-col gap-10 px-10 py-5">
+    <div className="flex flex-row gap-5 px-10 py-5">
       <div className="flex flex-row gap-10">
         <Dialog>
           <DialogTrigger asChild>
@@ -123,7 +120,8 @@ export default function ProjectCollection({}: Props) {
           </DialogContent>
         </Dialog>
       </div>
-      {projects}
+      {!isLoading && projects}
+      {isLoading && <Loader></Loader>}
     </div>
   );
 }

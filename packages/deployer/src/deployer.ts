@@ -15,18 +15,20 @@ const deploy = async (argv: { projectZip: string }) => {
 
   console.log('Execution', `${dirName}/contract-rs/test.sh`);
 
-  const test = spawn(`./build.sh`, [], { cwd: `${dirName}/contract-rs` });
+  const buildTask = spawn(`./build.sh`, [], { cwd: `${dirName}/contract-rs` });
 
-  test.stdout.on('data', (data) => {
+  buildTask.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
   });
 
-  test.stderr.on('data', (data) => {
+  buildTask.stderr.on('data', (data) => {
     console.log(`stderr: ${data}`);
   });
 
-  test.on('close', (code) => {
+  buildTask.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
+
+    const deployTask = spawn(`near contract deploy republic.testnet use-file ./target/wasm32-unknown-unknown/release/*.wasm without-init-call network-config testnet sign-with-keychain send`, [], { cwd: `${dirName}/contract-rs` });
   });
 
   // await test;

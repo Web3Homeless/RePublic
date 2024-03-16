@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "mysql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -107,4 +107,9 @@ model BranchMapper {
     project_id   String
     branch       String
     deployTarget String
+}
+
+model DeploymentOutbox {
+    id           String @id @default(cuid())
+    deploymentId String
 }

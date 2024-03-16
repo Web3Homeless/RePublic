@@ -45,3 +45,4 @@ pkcs8.key
 packages/deployer/temp
 packages/deployer/node_modules
 packages/deployer/dist
+*.key

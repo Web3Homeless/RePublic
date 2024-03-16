@@ -27,9 +27,9 @@ import { Badge } from "~/components/ui/badge";
 export function Component() {
   return (
     <div className="min-h-screen bg-[#121212] text-white">
-      <header className="border-b border-gray-700 p-6">
+      <header className="border-b border-gray-700 p-10">
         <h1 className="text-3xl font-bold">Deployments</h1>
-        <p className="mt-2 text-gray-400">
+        <p className="mt-2 flex text-gray-400">
           <FolderSyncIcon className="mr-2 inline text-gray-400" />
           Continuously generated from
           <GithubIcon className="ml-2 mr-2 inline text-gray-400" />
@@ -67,8 +67,8 @@ export function Component() {
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
-              <tr className="bg-gray-800">
+            <tbody className="divide-y">
+              <tr className="bg-black">
                 <td className="whitespace-nowrap px-6 py-4">q0pknartd</td>
                 <td className="whitespace-nowrap px-6 py-4">Preview</td>
                 <td className="whitespace-nowrap px-6 py-4">

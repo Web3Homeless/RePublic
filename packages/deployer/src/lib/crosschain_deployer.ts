@@ -50,7 +50,7 @@ export class Ethereum {
       maxPriorityFeePerGas: 1,
       value: BigInt(0),
       chain: this.chain_id,
-      datda: ''
+      data: ''
     };
 
     // Return the message hash

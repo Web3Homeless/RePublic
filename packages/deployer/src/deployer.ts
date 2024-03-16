@@ -5,6 +5,17 @@ import { hideBin } from 'yargs/helpers';
 import decompress from 'decompress';
 import * as uuid from 'uuid';
 import { spawn, exec } from 'child_process';
+import { db } from "republic/src/server/db.js";
+
+const worker = async () => {
+  const task = await db.userDeployment.findFirst({
+    where: {
+      status: 'Created'
+    }
+  });
+
+  console.log(task)
+};
 
 const deploy = async (argv: { projectZip: string }) => {
   const uuidTag = uuid.v4();
@@ -85,4 +96,10 @@ yargs(hideBin(process.argv))
     },
     deploy
   )
+  .command(
+    'worker',
+    'Runs worker',
+    worker
+  )
+
   .help().argv;

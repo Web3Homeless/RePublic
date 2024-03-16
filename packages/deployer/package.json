@@ -20,7 +20,8 @@
     "typescript": "^5.4.2",
     "uuid": "^9.0.1",
     "web3": "^4.6.0",
-    "yargs": "^17.7.2"
+    "yargs": "^17.7.2",
+    "republic": "workspace:*"
   },
   "bin": {
     "republic-worker": "dist/src/deployer.js"

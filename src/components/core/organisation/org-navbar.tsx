@@ -12,9 +12,9 @@ type Props = {
 
 export default function OrgNavbar({ orgName, projectName }: Props) {
   const pathName = usePathname();
-  const baseUrl = `/${orgName}/`;
+  const baseUrl = `org/${orgName}`;
 
-  const isActive = (pathname: string) => baseUrl + "/" + pathname == pathName;
+  const isActive = (pathname: string) => "/" + baseUrl + pathname == pathName;
 
   const linkStyles = (pathname: string) =>
     `px-3 py-2 rounded-md text-sm font-medium ${isActive(pathname) ? "text-red-500" : "text-gray-300 hover:text-white"}`;
@@ -29,12 +29,15 @@ export default function OrgNavbar({ orgName, projectName }: Props) {
       <UpperNavbar orgName={orgName} projectName={projectName}></UpperNavbar>
 
       <div className="flex justify-start space-x-4 border-b px-6 py-3">
-        <Link href={`/org/${orgName}/projects`} className={linkStyles("")}>
+        <Link
+          href={`/org/${orgName}/projects`}
+          className={linkStyles("/projects")}
+        >
           Projects
         </Link>
         <Link
           href={`/org/${orgName}/monitoring`}
-          className={linkStyles("deployments")}
+          className={linkStyles("/monitoring")}
         >
           Monitoring
         </Link>

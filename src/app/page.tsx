@@ -1,12 +1,16 @@
 import { unstable_noStore as noStore } from "next/cache";
+import { ApiError } from "next/dist/server/api-utils";
 import Link from "next/link";
 import UpperNavbar from "~/components/core/upper-navbar";
 
 import { getServerAuthSession } from "~/server/auth";
+import { api } from "~/trpc/server";
 
 export default async function Home() {
-  noStore();
+  //noStore();
+  console.log("SUSSSS");
   const session = await getServerAuthSession();
+  console.log("session");
   console.log(session);
 
   return (
@@ -20,8 +24,7 @@ export default async function Home() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 hover:bg-white/20"
-              href={`/org/${session?.user.name}`}
-              target="_blank"
+              href={`/org/${session?.user.githubLogin}/projects`}
             >
               <h3 className="text-2xl font-bold">Let's begin →</h3>
               <div className="text-lg">

@@ -12,7 +12,6 @@ export default function Page({
         projectName={params.projectId}
         orgName={params.orgId}
       ></OrgNavbar>
-      Page on {params.orgId} and {params.projectId}
     </div>
   );
 }

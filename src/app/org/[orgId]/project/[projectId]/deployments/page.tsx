@@ -41,19 +41,19 @@ export default function Page({
         projectName={params.projectId}
         orgName={params.orgId}
       ></ProjectNavbar>
-      <div className="min-h-screen bg-[#121212] text-white">
-        <header className="border-b border-gray-700 p-10">
+      <div className="min-h-screen text-white">
+        <header className="border-b p-10">
           <h1 className="text-3xl font-bold">Deployments</h1>
-          <p className="mt-2 flex text-gray-400">
+          <p className="mt-2 flex gap-2 text-gray-400">
             <FolderSyncIcon className="mr-2 inline text-gray-400" />
-            Continuously genefjxted from
+            Continuously generated from
             <GithubIcon className="ml-2 mr-2 inline text-gray-400" />
-            ETHIndia-Hack-2023/indudancers-frontend
+            {params.orgId}/{params.projectId}
           </p>
         </header>
         <div className="">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-700">
+            <table className="min-w-full divide-y">
               <thead>
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-400">
@@ -106,12 +106,24 @@ type DeploymentProps = {
 };
 
 function DeploymentComponent(props: DeploymentProps) {
+  const query = api.deployments.getDeploymentStatus.useQuery(
+    {
+      deploymentId: props.id,
+    },
+    {
+      refetchInterval: (data) =>
+        data && data.status !== "success" ? 2000 : false,
+    },
+  );
+
+  const currentStatus = query.data?.status || props.status;
+
   return (
-    <tr className="bg-black">
+    <tr className="">
       <td className="whitespace-nowrap px-6 py-4">{props.id}</td>
       <td className="whitespace-nowrap px-6 py-4">{props.env}</td>
       <td className="whitespace-nowrap px-6 py-4">
-        {StatusToBadge(props.status)}
+        {StatusToBadge(currentStatus)}
       </td>
       <td className="whitespace-nowrap px-6 py-4">{props.branch}</td>
       <td className="whitespace-nowrap px-6 py-4">{props.lastUpdated}</td>
@@ -151,7 +163,7 @@ function StatusToBadge(status: string) {
 
   if (status == "Success") {
     return (
-      <Badge className="bg-green-500-500" variant="default">
+      <Badge className="bg-green-500" variant="default">
         {status}
       </Badge>
     );

@@ -75,9 +75,12 @@ export default function ProjectCollection({}: Props) {
                 permissions
               </DialogDescription>
             </DialogHeader>
-            <Link href="https://github.com/apps/republic-eth/installations/new">
+            <a
+              target="_blank"
+              href="https://github.com/apps/republic-eth/installations/new"
+            >
               <Button variant={"secondary"}>Install Github App</Button>
-            </Link>
+            </a>
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">

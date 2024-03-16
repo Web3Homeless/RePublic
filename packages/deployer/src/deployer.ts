@@ -5,7 +5,7 @@ import { hideBin } from 'yargs/helpers';
 import decompress from 'decompress';
 import * as uuid from 'uuid';
 import { spawn, exec } from 'child_process';
-import { db } from "republic/src/server/db.js";
+import { db } from './db/db.js';
 
 const worker = async () => {
   const task = await db.userDeployment.findFirst({

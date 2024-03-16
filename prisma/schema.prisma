@@ -108,3 +108,8 @@ model BranchMapper {
     branch       String
     deployTarget String
 }
+
+model DeploymentOutbox {
+    id           String @id @default(cuid())
+    deploymentId String
+}

@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useSession } from "next-auth/react";
 import NavAvatar from "./nav-avatar";
+import { Button } from "../ui/button";
 
 type Props = {
   orgName: string;
@@ -19,29 +20,41 @@ export default function UpperNavbar({ orgName, projectName }: Props) {
       <div className="flex items-center space-x-4">
         <div className="flex gap-4 text-white">
           {/* Logo and project name here */}
-          <span className="font mr-5 font-extrabold">
+          <span className="font mr-5 flex items-center font-extrabold">
             <span className="text-red-500">RE:</span> PUBLIC
           </span>
           <Link className="font-bold" href={`/org/${orgName}`}>
-            {orgName}
+            <Button className="px-1" variant={"link"}>
+              {orgName}
+            </Button>
           </Link>
-          <span className="font-bold">/</span>{" "}
+          <span className="flex items-center font-bold">/</span>{" "}
           <Link
             className="font-bold"
             href={`org/${orgName}/project/${projectName}`}
           >
-            {projectName}
+            <Button className="px-1" variant={"link"}>
+              {projectName}
+            </Button>
           </Link>
         </div>
       </div>
 
       {/* Right side */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center gap-5 space-x-4 pr-5">
         {/* Icons or links here */}
-        <button className="text-gray-300">Feedback</button>
-        <button className="text-gray-300">Changelog</button>
-        <button className="text-gray-300">Help</button>
-        <button className="text-gray-300">Docs</button>
+        <Button className="px-0" variant={"link"}>
+          Feedback
+        </Button>
+        <Button className="px-0" variant={"link"}>
+          Change Logs
+        </Button>
+        <Button className="px-0" variant={"link"}>
+          Help
+        </Button>
+        <Button className="px-0" variant={"link"}>
+          Docs
+        </Button>
         {session.status == "unauthenticated" ? (
           <Link
             href="/api/auth/signin"

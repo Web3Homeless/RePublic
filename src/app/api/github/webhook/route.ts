@@ -8,6 +8,7 @@ import fs from "fs";
 import path from "path";
 import fetch from "node-fetch";
 import { db } from "~/server/db";
+import { DEPLOYMENT_TARGETS } from "~/lib/shared";
 
 export async function getInstallationAccessToken(installationId: number) {
   const privateKeyPath = process.env.PRIVATE_KEY_PATH;
@@ -38,43 +39,58 @@ const webhooks = new Webhooks({
   // Your secret that you set when creating the GitHub App
 });
 
+webhooks.on("push", async ({ id, name, payload }) => {
+  const lastCommit = payload.commits[payload.commits.length - 1];
+
+  const branch = payload.ref.replace("refs/heads/", ""); // "branch_name"
+  console.log();
+  console.log("PUSH event received");
+
+  // await db.userDeployment.create({
+  //   data: {
+  //     branch: 1,
+  //     chainId: 1,
+  //     deployedAddress: 1,
+  //     details: 1,
+  //     environment: 1,
+  //     owner: 1,
+  //     repoName: 1,
+  //     updatedBy: 1,
+  //     status: 1,
+  //     project_id: 1,
+  //     lastUpdated: 1,
+  //   },
+  // });
+});
+
 webhooks.on("installation", async ({ id, name, payload }) => {
   console.log(name, "event received");
   console.log(payload);
-  //console.log("payload received", payload);
 
-  // const token = await getInstallationAccessToken(
-  //   Number.parseInt(payload.installation.id.toString()),
-  // );
-  // const octokit = new Octokit({
-  //   auth: token,
-  // });
-
-  const ab = await db.githubInstallation.findFirst({
+  const existingInstallation = await db.githubInstallation.findFirst({
     where: {
       installation_id: payload.installation.id.toString(),
     },
   });
 
-  console.log(ab);
+  console.log(existingInstallation);
 
-  if (ab == null) {
+  if (existingInstallation == null) {
     console.log("CREATING NEW INSTALLATION");
 
-    const gg = await db.githubInstallation.create({
+    const installation = await db.githubInstallation.create({
       data: {
         installation_id: payload.installation.id.toString(),
         user_id: payload.sender.id.toString(),
       },
     });
 
-    console.log("CREATED");
+    console.log("CREATED INSTALLATION", installation);
   }
 });
 
 webhooks.on("pull_request", async ({ id, name, payload }) => {
   console.log(name, "event received");
-  //console.log("payload received", payload);
 
   const token = await getInstallationAccessToken(
     Number.parseInt(payload.installation!.id as string),
@@ -84,13 +100,6 @@ webhooks.on("pull_request", async ({ id, name, payload }) => {
   });
 
   try {
-    // await octokit.rest.issues.createComment({
-    //   owner: payload.repository.owner.login,
-    //   repo: payload.repository.name,
-    //   issue_number: payload.pull_request.number,
-    //   body: "Test message",
-    // });
-
     console.log(payload.repository.clone_url);
     console.log(payload.repository.full_name);
     console.log(payload.repository.name);

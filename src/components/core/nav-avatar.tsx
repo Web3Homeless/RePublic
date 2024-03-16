@@ -11,18 +11,20 @@ import {
 
 import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type Props = {};
 
 export default function NavAvatar({}: Props) {
   const router = useRouter();
+  const session = useSession();
 
   return (
     <div className="flex flex-row gap-2">
       <DropdownMenu>
         <DropdownMenuTrigger className="flex flex-row items-center gap-2">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            <AvatarImage src={session.data?.user.image} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>

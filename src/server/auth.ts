@@ -85,6 +85,7 @@ export const authOptions: NextAuthOptions = {
           where: { id: user.id },
         });
         session.user.githubLogin = currentUser?.githubLogin;
+        session.user.id = user.id;
       }
       return session;
     },

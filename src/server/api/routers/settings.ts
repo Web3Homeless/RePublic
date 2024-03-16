@@ -27,6 +27,8 @@ export const settingsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      console.log(ctx.session?.user);
+
       const result = await ctx.db.branchMapper.create({
         data: {
           branch: input.branch,

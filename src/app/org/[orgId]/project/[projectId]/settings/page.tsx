@@ -98,8 +98,8 @@ function MapComponent({ id, branch, isCreated, deploymentTargetId }: MapProps) {
     onSuccess: async () => {
       await utils.settings.invalidate();
       toast({
-        title: "Scheduled: Catch up",
-        description: "Friday, February 10, 2023 at 5:57 PM",
+        title: "Mapping deleted successfully",
+        description: "Mapping for branch-chain was successfully deleted",
       });
     },
   });
@@ -124,14 +124,9 @@ function MapComponent({ id, branch, isCreated, deploymentTargetId }: MapProps) {
 
   function onSelectChange(value: string) {
     setDeploy(value);
-    toast({
-      title: "Scheduled: Catch up",
-      description: "Friday, February 10, 2023 at 5:57 PM",
-    });
   }
 
   function onBranchChange(value: string) {
-    console.log("UPDATE BRAHCNH", value);
     setBranch(value);
   }
 
@@ -146,6 +141,10 @@ function MapComponent({ id, branch, isCreated, deploymentTargetId }: MapProps) {
       branch: branchState,
       mappingId: id,
       deployTarget: deployState,
+    });
+    toast({
+      title: "Mapping saved successfully",
+      description: "Mapping for branch-chain was successfully saved",
     });
   }
 

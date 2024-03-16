@@ -20,14 +20,38 @@ export default function Page({
     repo: params.projectId,
   });
 
+  const latestDeployments = api.deployments.getMainDeploy.useQuery({
+    projectId: params.projectId,
+  });
+
+  const deploymentCards = !latestDeployments.isLoading ? (
+    latestDeployments.data?.deployments.map((x) => {
+      return (
+        <DeploymentCard
+          key={x.id}
+          branch={x.branch}
+          chainId={x.chainId}
+          tx={x.deploymenttransaction}
+          created={x.lastUpdated.toDateString()}
+          status={x.status}
+          detail={x.details}
+        ></DeploymentCard>
+      );
+    })
+  ) : (
+    <></>
+  );
+
+  console.log(deploymentCards);
+
   return (
     <div>
       <ProjectNavbar
         projectName={params.projectId}
         orgName={params.orgId}
       ></ProjectNavbar>
-      <div className="min-h-screen bg-[#111111] text-white">
-        <header className="border-b border-gray-800">
+      <div className="min-h-screen  text-white">
+        <header className="border-b ">
           <div className="container mx-auto px-4 py-6">
             <h1 className="text-3xl font-bold">{repo.data?.repo.data.name}</h1>
             <div className="mt-2 flex space-x-4">
@@ -44,52 +68,57 @@ export default function Page({
           <p className="mt-2 text-gray-400">
             The deployment that is available to your visitors.
           </p>
-          {repo.isLoading && <Loader></Loader>}
-          {!repo.isLoading && <DeploymentCard></DeploymentCard>}
+          {(repo.isLoading || latestDeployments.isLoading) && <Loader></Loader>}
+          {!repo.isLoading && !latestDeployments.isLoading && deploymentCards}
         </main>
       </div>
     </div>
   );
 }
 
-function DeploymentCard() {
+type DeploymentProps = {
+  created: string;
+  chainId: string;
+  tx: string;
+  status: string;
+  branch: string;
+  detail: string;
+};
+
+function DeploymentCard(props: DeploymentProps) {
   return (
     <div className="mt-6 flex flex-col lg:flex-row lg:space-x-8">
-      <div className="mt-6 w-full rounded-lg bg-black p-4 lg:mt-0 lg:w-1/2">
+      <div className="mt-6 w-full rounded-lg bg-black p-4 outline outline-1 outline-red-500 lg:mt-0 lg:w-1/2">
         <h3 className="mb-2 text-lg font-bold">Deployment</h3>
-        <Link className="text-blue-400" href="#">
-          indudancers-frontend-eqf9be0hh-web3homeless.vercel.app
-        </Link>
-        <div className="mt-2 flex items-center">
-          <Link className="text-blue-400" href="#">
-            indudancers-frontend.vercel.app
-          </Link>
-          <Badge className="ml-2" variant="secondary">
-            +2
-          </Badge>
-        </div>
-        <div className="mt-4">
+        <a
+          target="_blank"
+          className="text-blue-400"
+          href={EthScanByChain(props.chainId, props.tx)}
+        >
+          {props.created}.republic.eth
+        </a>
+        {/* <div className="mt-4">
           <h4 className="text-lg font-bold">Domains</h4>
           <p className="text-gray-400">indudancers-frontend.vercel.app</p>
-        </div>
+        </div> */}
         <div className="mt-4">
           <h4 className="text-lg font-bold">Status</h4>
           <div className="flex items-center">
             <Badge className="bg-green-600" variant="secondary">
-              Ready
+              {props.status}
             </Badge>
-            <p className="ml-2 text-gray-400">Created 97d ago by MadLime</p>
+            <p className="ml-2 text-gray-400">{props.created}</p>
           </div>
         </div>
         <div className="mt-4">
           <h4 className="text-lg font-bold">Source</h4>
           <div className="flex items-center">
             <GitBranchIcon className="text-gray-400" />
-            <p className="ml-2 text-gray-400">main</p>
+            <p className="ml-2 text-gray-400">{props.branch}</p>
           </div>
           <div className="mt-2 flex items-center">
             <GitCommitIcon className="text-gray-400" />
-            <p className="ml-2 text-gray-400">134dfdf Update README.md</p>
+            <p className="ml-2 text-gray-400">{props.detail}</p>
           </div>
         </div>
         <div className="mt-4 flex space-x-4">
@@ -100,6 +129,13 @@ function DeploymentCard() {
       </div>
     </div>
   );
+}
+
+function EthScanByChain(chainId: string, transaction: string) {
+  switch (chainId) {
+    case "0":
+      return `https://testnet.nearblocks.io/txns/${transaction}`;
+  }
 }
 
 function GitBranchIcon(props) {

@@ -33,7 +33,7 @@ export default function ProjectNavbar({ orgName, projectName }: Props) {
       {/* Subnavbar */}
       <div className="flex justify-start space-x-4 px-6 py-3">
         {/* Subnav items */}
-        <Link href={`/${baseUrl}/`} className={linkStyles("")}>
+        <Link href={`/${baseUrl}`} className={linkStyles("")}>
           Overview
         </Link>
         <Link

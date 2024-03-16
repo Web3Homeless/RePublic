@@ -9,8 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-import { ExitIcon, ArrowDownIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
+import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 type Props = {};

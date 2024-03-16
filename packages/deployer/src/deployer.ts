@@ -4,11 +4,34 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import decompress from 'decompress';
 import * as uuid from 'uuid';
+import { spawn } from 'child_process';
 
 const deploy = async (argv: { projectZip: string }) => {
-  console.log('Deploying', argv.projectZip, uuid.v4());
+  const dirName = `temp/${uuid.v4()}`;
 
-  await decompress(argv.projectZip, `temp/${uuid.v4()}`);
+  console.log('Deploying', argv.projectZip, dirName);
+
+  await decompress(argv.projectZip, dirName);
+
+  console.log('Execution', `${dirName}/contract-rs/test.sh`);
+
+  const buildTask = spawn(`./build.sh`, [], { cwd: `${dirName}/contract-rs` });
+
+  buildTask.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+
+  buildTask.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+
+  buildTask.on('close', (code) => {
+    console.log(`child process exited with code ${code}`);
+
+    const deployTask = spawn(`near contract deploy republic.testnet use-file ./target/wasm32-unknown-unknown/release/*.wasm without-init-call network-config testnet sign-with-keychain send`, [], { cwd: `${dirName}/contract-rs` });
+  });
+
+  // await test;
 };
 
 // eslint-disable-next-line max-len

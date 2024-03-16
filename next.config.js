@@ -16,7 +16,6 @@ const config = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  distDir: 'build'
 };
 
 export default config;

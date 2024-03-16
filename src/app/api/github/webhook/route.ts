@@ -40,27 +40,58 @@ const webhooks = new Webhooks({
 });
 
 webhooks.on("push", async ({ id, name, payload }) => {
-  const lastCommit = payload.commits[payload.commits.length - 1];
+  //const lastCommit = payload.commits[payload.commits.length - 1];
 
   const branch = payload.ref.replace("refs/heads/", ""); // "branch_name"
   console.log();
   console.log("PUSH event received");
 
-  // await db.userDeployment.create({
-  //   data: {
-  //     branch: 1,
-  //     chainId: 1,
-  //     deployedAddress: 1,
-  //     details: 1,
-  //     environment: 1,
-  //     owner: 1,
-  //     repoName: 1,
-  //     updatedBy: 1,
-  //     status: 1,
-  //     project_id: 1,
-  //     lastUpdated: 1,
-  //   },
-  // });
+  const project = await db.userProject.findFirst({
+    where: {
+      owner: payload.repository.owner?.login,
+      repoName: payload.repository.name,
+    },
+  });
+
+  if (project == null) {
+    console.log("Not found a PROJECT with given repo name and login!");
+    return;
+  }
+  console.log("Found a PROJECT with given repo name and login!");
+
+  console.log(branch);
+
+  const mapping = await db.branchMapper.findFirst({
+    where: {
+      branch: branch,
+    },
+  });
+
+  if (mapping == null) {
+    console.log("Not found a MAPPING with given Branch!");
+    return;
+  }
+
+  console.log("Found a MAPPING with given Branch!");
+
+  const res = await db.userDeployment.create({
+    data: {
+      user_id: mapping?.user_id,
+      branch: branch,
+      chainId: mapping?.deployTarget!,
+      deployedAddress: "",
+      details: payload.head_commit!.message,
+      environment: "Preview",
+      owner: payload.repository.owner!.login,
+      repoName: payload.repository.name,
+      updatedBy: payload.head_commit!.author.username!,
+      status: "Created",
+      project_id: project!.id,
+      lastUpdated: payload.head_commit!.timestamp,
+    },
+  });
+
+  console.log("Created new deployment");
 });
 
 webhooks.on("installation", async ({ id, name, payload }) => {

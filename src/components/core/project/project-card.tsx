@@ -16,6 +16,8 @@ import {
 type Props = {
   id: string;
   name: string;
+  owner: string;
+  branch: string;
 };
 
 export default function ProjectCard({ name }: Props) {

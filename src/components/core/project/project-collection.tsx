@@ -57,7 +57,14 @@ export default function ProjectCollection({}: Props) {
   ));
 
   const projects = listProjQuery.data?.projects.map((x) => {
-    return <ProjectCard key={x.id} id={x.id} name={x.repoName}></ProjectCard>;
+    return (
+      <ProjectCard
+        key={x.id}
+        id={x.id}
+        name={x.repoName}
+        owner={x.owner}
+      ></ProjectCard>
+    );
   });
 
   return (

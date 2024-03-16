@@ -42,7 +42,6 @@ yarn-error.log*
 *.tsbuildinfo
 pkcs8.key
 
-packages/deployer/data
 packages/deployer/temp
 packages/deployer/node_modules
 packages/deployer/dist

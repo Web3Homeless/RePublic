@@ -25,7 +25,7 @@ export default function OrgNavbar({ orgName, projectName }: Props) {
   console.log(isActive("deployments"));
 
   return (
-    <div className="bg-black">
+    <div>
       <UpperNavbar orgName={orgName} projectName={projectName}></UpperNavbar>
 
       <div className="flex justify-start space-x-4 px-6 py-3">

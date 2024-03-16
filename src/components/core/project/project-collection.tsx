@@ -26,6 +26,7 @@ import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import AppLoader from "~/components/common/app-loader";
 import { useRouter } from "next/navigation";
+import ProjectCard from "./project-card";
 
 type Props = {};
 
@@ -46,6 +47,8 @@ export default function ProjectCollection({}: Props) {
   const { data, isLoading } =
     api.github.getAllReposWithInstallations.useQuery();
 
+  const listProjQuery = api.project.listProjects.useQuery();
+
   if (isLoading) {
     return <AppLoader></AppLoader>;
   }
@@ -55,6 +58,10 @@ export default function ProjectCollection({}: Props) {
       {r.name}
     </SelectItem>
   ));
+
+  const projects = listProjQuery.data?.projects.map((x) => {
+    return <ProjectCard key={x.id} id={x.id} name={x.repoName}></ProjectCard>;
+  });
 
   return (
     <div className="flex flex-col gap-10 px-10 py-5">
@@ -116,7 +123,7 @@ export default function ProjectCollection({}: Props) {
           </DialogContent>
         </Dialog>
       </div>
-      {/* <div>{repos}</div> */}
+      {projects}
     </div>
   );
 }

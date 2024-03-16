@@ -14,12 +14,12 @@ export default function UpperNavbar({ orgName, projectName }: Props) {
   const session = useSession();
 
   return (
-    <div className="flex items-center justify-between border-b border-gray-700 bg-black px-6 py-4">
+    <div className="flex items-center justify-between border-b px-6 py-4">
       {/* Left side */}
       <div className="flex items-center space-x-4">
         <div className="flex gap-4 text-white">
           {/* Logo and project name here */}
-          <span className="mr-5 font-bold">Logo</span>
+          <span className="font mr-5 font-extrabold">RE :</span>
           <Link className="font-bold" href={`/org/${orgName}`}>
             {orgName}
           </Link>

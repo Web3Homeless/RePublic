@@ -41,10 +41,17 @@ export default function Page({
   const { data, isLoading } =
     api.github.getAllReposWithInstallations.useQuery();
 
+  const createProjectMutation = api.project.createProject.useMutation();
+
   console.log("repodata", repoData);
   console.log("data", data);
 
-  const onDeployClick = () => {};
+  const onDeployClick = () => {
+    createProjectMutation.mutate({
+      owner: repoOwner,
+      repo: repoName,
+    });
+  };
 
   return (
     <div>

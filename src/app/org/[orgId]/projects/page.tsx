@@ -14,7 +14,6 @@ export default function Page({
         projectName={params.projectId}
         orgName={params.orgId}
       ></OrgNavbar>
-      PROJECTS Page on {params.orgId} and {params.projectId}
       <ProjectCollection></ProjectCollection>
       <div></div>
     </div>

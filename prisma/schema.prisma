@@ -77,3 +77,32 @@ model GithubInstallation {
     user_id         String
     installation_id String
 }
+
+model UserDeployment {
+    id              String @id @default(cuid())
+    user_id         String
+    project_id      String
+    owner           String
+    repoName        String
+    deployedAddress String
+    chainId         String
+    environment     String
+    branch          String 
+    lastUpdated     DateTime
+    details         String
+    updatedBy       String
+}
+
+model UserProject {
+    id       String @id @default(cuid())
+    user_id  String 
+    owner    String
+    repoName String
+}
+
+model BranchMapper {
+    id         String @id @default(cuid())
+    user_id    String 
+    project_id String
+    brach      String
+}

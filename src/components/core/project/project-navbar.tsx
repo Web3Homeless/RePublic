@@ -26,14 +26,14 @@ export default function ProjectNavbar({ orgName, projectName }: Props) {
   console.log(isActive("deployments"));
 
   return (
-    <div className="bg-black">
+    <div className="border-[0.5px]">
       {/* Top bar */}
       <UpperNavbar orgName={orgName} projectName={projectName}></UpperNavbar>
 
       {/* Subnavbar */}
       <div className="flex justify-start space-x-4 px-6 py-3">
         {/* Subnav items */}
-        <Link href={`/${baseUrl}/`} className={linkStyles("")}>
+        <Link href={`/${baseUrl}`} className={linkStyles("")}>
           Overview
         </Link>
         <Link

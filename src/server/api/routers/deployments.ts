@@ -10,7 +10,12 @@ export const deploymentsRouter = createTRPCRouter({
         where: {
           repoName: input.repoName,
         },
+        select: {
+          zipArchive: false,
+        },
       });
+
+      console.log(res);
 
       return {
         deployments: res,

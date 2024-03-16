@@ -93,6 +93,9 @@ model UserDeployment {
     details         String
     updatedBy       String
     status          String
+    archiveUrl      String
+    installationId  String
+    zipArchive      Bytes
 }
 
 model UserProject {

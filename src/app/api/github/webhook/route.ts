@@ -15,6 +15,11 @@ export async function getInstallationAccessToken(installationId: number) {
   const filePath = path.join(process.cwd(), privateKeyPath!);
   const privateKey = fs.readFileSync(filePath, "utf8");
 
+  console.log(filePath);
+  console.log(privateKeyPath);
+  console.log(privateKey);
+  console.log(installationId);
+
   console.log("DEFAULT AUTH");
 
   const auth = createAppAuth({
@@ -74,6 +79,25 @@ webhooks.on("push", async ({ id, name, payload }) => {
 
   console.log("Found a MAPPING with given Branch!");
 
+  const token = await getInstallationAccessToken(
+    Number.parseInt(payload.installation!.id as string),
+  );
+
+  console.log("AFTER TOKEN!");
+
+  const octokit = new Octokit({
+    auth: token.token,
+  });
+
+  console.log(payload.repository.owner.login);
+  console.log(payload.repository.name);
+
+  const bytes = await downloadRepositoryBytes(
+    payload.repository.owner.login,
+    payload.repository.name,
+    octokit,
+  );
+
   const res = await db.userDeployment.create({
     data: {
       user_id: mapping?.user_id,
@@ -88,6 +112,9 @@ webhooks.on("push", async ({ id, name, payload }) => {
       status: "Created",
       project_id: project!.id,
       lastUpdated: payload.head_commit!.timestamp,
+      archiveUrl: "",
+      installationId: payload.installation!.id.toString(),
+      zipArchive: bytes,
     },
   });
 
@@ -184,6 +211,35 @@ async function downloadRepository(
   }
 
   console.log(`${repo}.zip has been downloaded.`);
+}
+
+async function downloadRepositoryBytes(
+  owner: string,
+  repo: string,
+  octokit: Octokit,
+): Promise<Buffer> {
+  const response = await octokit.repos.downloadZipballArchive({
+    owner: owner,
+    repo: repo,
+    ref: "main",
+  });
+
+  // Check if the response has a URL property
+  if (response.url) {
+    // Fetching the zip file from the URL
+    const res = await fetch(response.url);
+    if (res.ok) {
+      // Read the response body into a Buffer
+      const arrayBuffer = await res.arrayBuffer();
+      return Buffer.from(arrayBuffer);
+    } else {
+      console.log("Failed to download the zip file.");
+      throw new Error("Failed to download the zip file.");
+    }
+  } else {
+    console.log("No URL provided for the repository zip file.");
+    throw new Error("No URL provided for the repository zip file.");
+  }
 }
 
 export async function POST(req: NextRequest) {

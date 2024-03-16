@@ -4,6 +4,8 @@ import { ring2 } from "ldrs";
 type Props = React.HTMLAttributes<HTMLDivElement>;
 
 export default function Loader(props: Props) {
+  return <div>loading</div>;
+
   useEffect(() => {
     return ring2.register();
   }, []);

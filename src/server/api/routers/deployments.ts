@@ -1,4 +1,6 @@
+import { Octokit } from "@octokit/rest";
 import { z } from "zod";
+import { getInstallationAccessToken } from "~/app/api/github/webhook/route";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -14,6 +16,12 @@ export const deploymentsRouter = createTRPCRouter({
             in: res.map((x) => x.deploymentId),
           },
         },
+      });
+
+      await getInstallationAccessToken();
+
+      const octokit = new Octokit({
+        auth: "",
       });
 
       console.log(res);
@@ -66,6 +74,24 @@ export const deploymentsRouter = createTRPCRouter({
       const deployment = await ctx.db.userDeployment.findFirst({
         where: {
           id: input.deploymentId,
+        },
+        select: {
+          id: true,
+          user_id: true,
+          project_id: true,
+          owner: true,
+          repoName: true,
+          deployedAddress: true,
+          chainId: true,
+          environment: true,
+          branch: true,
+          lastUpdated: true,
+          details: true,
+          updatedBy: true,
+          status: true,
+          archiveUrl: true,
+          installationId: true,
+          zipArchive: false,
         },
       });
 

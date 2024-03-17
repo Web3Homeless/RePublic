@@ -132,7 +132,7 @@ function DeploymentComponent(props: DeploymentProps) {
     },
   );
 
-  const currentStatus = query.data?.status || props.status;
+  const currentStatus = query.data?.deployment?.status || props.status;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -179,8 +179,7 @@ function LogCollection(props: LogCollectionProps) {
       deploymentId: props.deploymentId,
     },
     {
-      // Consider enabling refetchInterval if you need live updates.
-      // refetchInterval: 10_000,
+      refetchInterval: 2_000,
     },
   );
 

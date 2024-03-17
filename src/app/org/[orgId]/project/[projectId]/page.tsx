@@ -88,7 +88,7 @@ type DeploymentProps = {
 function DeploymentCard(props: DeploymentProps) {
   return (
     <div className="mt-6 flex flex-col lg:flex-row lg:space-x-8">
-      <div className="mt-6 w-full rounded-lg bg-black p-4 outline outline-1 outline-red-500 lg:mt-0 lg:w-1/2">
+      <div className="mt-6 w-full rounded-lg bg-black p-4 outline outline-1 outline-green-500 lg:mt-0 lg:w-1/2">
         <h3 className="mb-2 text-lg font-bold">Deployment</h3>
         <a
           target="_blank"
@@ -135,6 +135,8 @@ function EthScanByChain(chainId: string, transaction: string) {
   switch (chainId) {
     case "0":
       return `https://testnet.nearblocks.io/txns/${transaction}`;
+    case "23011913":
+      return `https://stylus-testnet-explorer.arbitrum.io/tx/${transaction}`;
   }
 }
 

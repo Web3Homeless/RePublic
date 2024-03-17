@@ -93,6 +93,35 @@ export class Ethereum {
     return { transaction, payload };
   }
 
+  async createDeploymentPayload(sender: any, bytecode: string) {
+    const common = new Common({ chain: this.chain_id });
+
+    // Get the nonce
+    const nonce = await this.web3.eth.getTransactionCount(sender);
+    const maxFeePerGas = await this.queryGasPrice();
+
+    // Construct transaction
+    const transactionData = {
+      nonce,
+      gasLimit: 21000,
+      maxFeePerGas,
+      maxPriorityFeePerGas: 1,
+      value: BigInt(0),
+      chain: this.chain_id,
+      data: bytecode
+    };
+
+    // Return the message hash
+    const transaction = FeeMarketEIP1559Transaction.fromTxData(
+      transactionData,
+      { common }
+    );
+    const payload = Array.from(
+      new Uint8Array(transaction.getHashedMessageToSign().slice().reverse())
+    );
+    return { transaction, payload };
+  }
+
   reconstructSignature(
     transaction: {
       addSignature: (arg0: bigint, arg1: Buffer, arg2: Buffer) => any;

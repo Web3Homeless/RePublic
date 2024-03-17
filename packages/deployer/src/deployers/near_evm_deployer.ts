@@ -13,6 +13,7 @@ import {
 import { providers } from 'near-api-js';
 import * as nearAPI from 'near-api-js';
 import { bytesToHex } from '@ethereumjs/util';
+import { BN } from 'bn.js';
 
 const THIRTY_TGAS = '30000000000000';
 const NO_DEPOSIT = '0';
@@ -86,8 +87,8 @@ async function callMethod({
         functionCall: {
           methodName: method,
           args: args as any,
-          gas,
-          deposit,
+          gas: new BN(gas),
+          deposit: new BN(deposit),
         },
       },
     ],
@@ -196,10 +197,10 @@ export const deployNearEvmProject = async (argv: {
     throw new Error('Signature is not valid');
   }
 
-  const txHash = Eth.relayTransaction(signedTransaction);
+  const txHash = await Eth.relayTransaction(signedTransaction);
 
   return {
     account,
-    txId: txHash,
+    txId: txHash.toString(),
   };
 };

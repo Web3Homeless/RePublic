@@ -55,6 +55,11 @@ const worker = async () => {
         projectZip: archName,
         taskId: task.id,
       });
+    } else if (task.chainId == '11155111') {
+      deployment = await deployNearEvmProject({
+        projectZip: archName,
+        taskId: task.id,
+      });
     } else {
       throw Error('Incorrect chain');
     }
@@ -87,8 +92,6 @@ const worker = async () => {
     });
   }
 };
-
-const deployHardhatProject = async () => {};
 
 // eslint-disable-next-line max-len
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, @typescript-eslint/no-floating-promises

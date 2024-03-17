@@ -7,6 +7,9 @@ import * as uuid from 'uuid';
 import { spawn, exec } from 'child_process';
 import { db } from './db/db.js';
 import fs from 'fs';
+import { guessProjectType } from './lib/project_type_guesser.js';
+import { deployNearRustProject } from './deployers/near_rust_deployer.js';
+import { deployStylusProject } from './deployers/stylus_deployer.js';
 
 const worker = async () => {
   const task = await db.userDeployment.findFirst({
@@ -39,107 +42,48 @@ const worker = async () => {
 
   await fs.promises.writeFile(archName, task?.zipArchive!);
 
-  const deployment = await deployNearProject({
-    projectZip: archName,
-  });
-
-  await db.deploymentOutbox.create({
-    data: {
-      deploymentId: task.id,
-    },
-  });
-
-  await db.userDeployment.update({
-    data: {
-      deployedAddress: deployment.account,
-      deploymenttransaction: deployment.txId,
-      status: 'Success',
-    },
-    where: {
-      id: task?.id,
-    },
-  });
-
-};
-
-type Deployment = {
-  account: string;
-  txId: string;
-};
-
-const deployNearProject = async (argv: { projectZip: string }) => {
-  const uuidTag = uuid.v4();
-
-  const dirName = `temp/${uuidTag}`;
-
-  const account = `${uuidTag}.testnet`;
-
-  console.log('Creating account..');
-
-  await new Promise(function (resolve, reject) {
-    const createAccount = exec(`near create-account ${account} --useFaucet`);
-
-    createAccount.addListener('error', reject);
-    createAccount.addListener('exit', resolve);
-  });
-
-  console.log('Deploying', argv.projectZip, dirName);
-
   try {
-    await decompress(argv.projectZip, dirName);
-
-    const projectDirName = (await fs.promises.readdir(dirName))[0];
-    const params = { cwd: `${dirName}/${projectDirName}/contract-rs` };
-    console.log(params);
-
-    console.log('Execution', `${projectDirName}/contract-rs/test.sh`);
-
-    const buildTask = spawn(`./build.sh`, [], params);
-
-    return await new Promise<Deployment>((resolve, reject) => {
-      buildTask.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
+    let deployment;
+    if (task.chainId == '0') {
+      deployment = await deployNearRustProject({
+        projectZip: archName,
+        taskId: task.id,
       });
-
-      buildTask.stderr.on('data', (data) => {
-        console.log(`stderr: ${data}`);
+    } else if (task.chainId == '23011913') {
+      deployment = await deployStylusProject({
+        projectZip: archName,
+        taskId: task.id,
       });
+    } else {
+      throw Error('');
+    }
 
-      buildTask.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
-
-        const deployTask = spawn(
-          `sh`,
-          [
-            '-c',
-            `near deploy ${account} ./target/wasm32-unknown-unknown/release/*.wasm`,
-          ],
-          params
-        );
-
-        deployTask.stdout.on('data', (data) => {
-          console.log(`Deploy stdout: ${data}`);
-          const re = /Transaction Id (.*)/g;
-          const r = re.exec(data);
-          if (r) {
-            console.log('[Tx id]', r[1]);
-            resolve({
-              account,
-              txId: r[1],
-            });
-          }
-        });
-
-        deployTask.stderr.on('data', (data) => {
-          console.log(`Deploy stderr: ${data}`);
-        });
-        deployTask.on('close', (code) => {
-          reject(null);
-        });
-      });
+    await db.deploymentOutbox.create({
+      data: {
+        deploymentId: task.id,
+      },
     });
-  } finally {
-    fs.rmSync(dirName, { recursive: true, force: true });
+
+    await db.userDeployment.update({
+      data: {
+        deployedAddress: deployment.account,
+        deploymenttransaction: deployment.txId,
+        status: 'Success',
+      },
+      where: {
+        id: task?.id,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    await db.userDeployment.update({
+      data: {
+        status: 'Failed',
+      },
+      where: {
+        id: task?.id,
+      },
+    });
   }
 };
 
@@ -157,7 +101,7 @@ yargs(hideBin(process.argv))
       },
     },
     async (argv: { projectZip: string }) => {
-      await deployNearProject(argv);
+      await deployNearRustProject(argv);
     }
   )
   .command(

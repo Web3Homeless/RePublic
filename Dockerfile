@@ -17,3 +17,4 @@ RUN pnpm link --global
 RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN npm install -g near-cli 
+RUN RUSTFLAGS="-C link-args=-rdynamic" cargo install --force cargo-stylus

@@ -13,7 +13,8 @@
     "start": "next start",
     "hook": "smee -u https://smee.io/JC4l97s7W8PfVuNX -t http://localhost:3000/api/github/webhook",
     "key": "openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in key.pem -out pkcs8.key",
-    "run-worker": "pnpm --filter=deployer build && pnpm --filter=deployer start-worker"
+    "compile-worker": "pnpm --filter=deployer build",
+    "run-worker": "pnpm --filter=deployer start-worker"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.0",

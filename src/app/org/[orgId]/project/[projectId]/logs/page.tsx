@@ -12,7 +12,7 @@ export default function Page({
         projectName={params.projectId}
         orgName={params.orgId}
       ></ProjectNavbar>
-      Page on {params.orgId} and {params.projectId}
+      In future, there should be beatiful logging
     </div>
   );
 }

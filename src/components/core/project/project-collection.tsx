@@ -68,8 +68,8 @@ export default function ProjectCollection({}: Props) {
   });
 
   return (
-    <div className="flex flex-row gap-5 px-10 py-5">
-      <div className="flex flex-row gap-10">
+    <div className="flex flex-row flex-wrap gap-5 px-10 py-5">
+      <div className="flex flex-row gap-10 ">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline">Import project</Button>

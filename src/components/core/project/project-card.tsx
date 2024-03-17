@@ -36,7 +36,7 @@ export default function ProjectCard(props: Props) {
           <TriangleIcon className="text-white" />
           <div>
             <CardTitle>{props.name}</CardTitle>
-            <CardDescription>indudancers-frontend.republic.app</CardDescription>
+            <CardDescription>RE:public application</CardDescription>
           </div>
         </div>
       </CardHeader>
@@ -49,13 +49,15 @@ export default function ProjectCard(props: Props) {
         </div>
         <div className="mt-4">
           <p className="text-sm"></p>
-          <p className="text-xs opacity-70">97d ago on {props.branch}</p>
+          <p className="text-xs opacity-70">
+            Some time ago on {props.branch ?? "main"}
+          </p>
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <GitBranchIcon className="text-white" />
-          <span className="text-xs">0</span>
+          <span className="text-xs">1</span>
         </div>
         <MoreHorizontalIcon className="text-white" />
       </CardFooter>

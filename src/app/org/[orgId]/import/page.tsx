@@ -22,6 +22,7 @@ import OrgNavbar from "~/components/core/organisation/org-navbar";
 import UpperNavbar from "~/components/core/upper-navbar";
 import AppLoader from "~/components/common/app-loader";
 import Link from "next/link";
+import { GitBranchPlus, GitCommit } from "lucide-react";
 
 export default function Page({
   params,
@@ -56,6 +57,7 @@ export default function Page({
       repo: repoName,
     });
 
+    utils;
     await utils.project.invalidate();
     router.push(`/org/${params.orgId}/projects`);
   };
@@ -83,7 +85,7 @@ export default function Page({
               <div className="w-64 pr-8">
                 <div className="mb-4 flex items-center">
                   <GlobeIcon className="h-8 w-8 text-gray-400" />
-                  <span className="ml-2">notes.goose.com</span>
+                  <span className="ml-2">Next big thing</span>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center">
@@ -97,8 +99,11 @@ export default function Page({
                 </div>
                 <div className="mt-8 border-t border-gray-600 pt-4">
                   <div className="mb-2 flex items-center">
-                    <GitBranchIcon className="h-6 w-6 text-gray-400" />
-                    <span className="ml-2">defaultgoose/notes.goose.com</span>
+                    <GitCommit className="h-6 w-6 text-gray-400" />
+                    <span className="ml-2">
+                      {repoData?.repo.data.owner.login}/
+                      {repoData?.repo.data.name}
+                    </span>
                   </div>
                   <div className="mb-2 flex items-center">
                     <GitBranchIcon className="h-6 w-6 text-gray-400" />
@@ -159,9 +164,16 @@ export default function Page({
                               className="bg-[#333]"
                               position="popper"
                             >
-                              <SelectItem value="next">
-                                Arbitrum Stylus RUST
+                              <SelectItem value="arbitrumrust">
+                                Arbitrum Stylus Rust
                               </SelectItem>
+                              <SelectItem value="nearrust">
+                                Near Rust
+                              </SelectItem>
+                              <SelectItem value="nearts">
+                                Near Typescript
+                              </SelectItem>
+                              <SelectItem value="solidity">Solidity</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>

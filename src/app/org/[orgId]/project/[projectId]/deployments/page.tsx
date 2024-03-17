@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import { DEPLOY_TO_CHAIN } from "~/lib/shared";
 
 export default function Page({
   params,
@@ -29,6 +30,7 @@ export default function Page({
         <DeploymentComponent
           id={x.id}
           key={x.id}
+          chainId={x.chainId}
           branch={x.branch}
           details={x.details}
           lastUpdated={
@@ -111,6 +113,7 @@ type DeploymentProps = {
   env: string;
   status: string;
   branch: string;
+  chainId: string;
   lastUpdated: string;
   details: string;
   updatedBy: string;
@@ -133,11 +136,15 @@ function DeploymentComponent(props: DeploymentProps) {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const chainName = Object.entries(DEPLOY_TO_CHAIN).find(
+    (x) => x[0] == props.chainId,
+  );
+
   return (
     <>
       <tr onClick={() => setIsOpen(!isOpen)}>
         <td className="whitespace-nowrap px-6 py-4">{props.id}</td>
-        <td className="whitespace-nowrap px-6 py-4">{props.env}</td>
+        <td className="whitespace-nowrap px-6 py-4">{chainName?.[1]}</td>
         <td className="flex items-center gap-2 whitespace-nowrap px-6 py-4">
           {StatusToBadge(currentStatus)}
           {currentStatus == "Building" && <Loader size={20}></Loader>}

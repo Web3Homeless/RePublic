@@ -11,12 +11,14 @@ import { db } from "~/server/db";
 import { DEPLOYMENT_TARGETS } from "~/lib/shared";
 
 export async function getInstallationAccessToken(installationId: number) {
-  const privateKeyPath = process.env.PRIVATE_KEY_PATH;
-  const filePath = path.join(process.cwd(), privateKeyPath!);
-  const privateKey = fs.readFileSync(filePath, "utf8");
+  // const privateKeyPath = process.env.PRIVATE_KEY_PATH;
+  // const filePath = path.join(process.cwd(), privateKeyPath!);
+  // const privateKey = fs.readFileSync(filePath, "utf8");
 
-  console.log(filePath);
-  console.log(privateKeyPath);
+  const privateKey = process.env.PRIVATE_KEY;
+
+  // console.log(filePath);
+  // console.log(privateKeyPath);
   console.log(privateKey);
   console.log(installationId);
 
@@ -68,6 +70,7 @@ webhooks.on("push", async ({ id, name, payload }) => {
 
   const mapping = await db.branchMapper.findFirst({
     where: {
+      project_id: payload.repository.name,
       branch: branch,
     },
   });
@@ -92,27 +95,35 @@ webhooks.on("push", async ({ id, name, payload }) => {
   console.log(payload.repository.owner.login);
   console.log(payload.repository.name);
 
+  const commits = payload.commits;
+  // The last commit is the most recent one
+  const lastCommit = commits[commits.length - 1];
+
+  console.log(lastCommit);
+
   const bytes = await downloadRepositoryBytes(
     payload.repository.owner.login,
     payload.repository.name,
     octokit,
   );
 
+  console.log(mapping);
+
   const res = await db.userDeployment.create({
     data: {
       user_id: mapping?.user_id,
       branch: branch,
-      chainId: mapping?.deployTarget!,
+      chainId: mapping?.deployTarget,
       deployedAddress: "",
       deploymenttransaction: "",
-      details: payload.head_commit!.message,
+      details: lastCommit!.message,
       environment: "Preview",
       owner: payload.repository.owner!.login,
       repoName: payload.repository.name,
-      updatedBy: payload.head_commit!.author.username!,
+      updatedBy: lastCommit!.author.username!,
       status: "Created",
       project_id: project!.id,
-      lastUpdated: payload.head_commit!.timestamp,
+      lastUpdated: lastCommit!.timestamp,
       archiveUrl: "",
       installationId: payload.installation!.id.toString(),
       zipArchive: bytes,

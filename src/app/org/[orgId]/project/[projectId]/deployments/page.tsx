@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ProjectNavbar from "~/components/core/project/project-navbar";
+import Convert from "ansi-to-html";
 
 import { Badge } from "~/components/ui/badge";
 import Loader from "~/components/ui/loaders/loader";
@@ -12,12 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "~/components/ui/collapsible";
+import { DEPLOY_TO_CHAIN } from "~/lib/shared";
 
 export default function Page({
   params,
@@ -34,9 +30,14 @@ export default function Page({
         <DeploymentComponent
           id={x.id}
           key={x.id}
+          chainId={x.chainId}
           branch={x.branch}
           details={x.details}
-          lastUpdated={x.lastUpdated.toDateString()}
+          lastUpdated={
+            x.lastUpdated.toDateString() +
+            " " +
+            x.lastUpdated.toLocaleTimeString()
+          }
           status={x.status}
           env={x.environment}
           updatedBy={x.updatedBy}
@@ -112,12 +113,15 @@ type DeploymentProps = {
   env: string;
   status: string;
   branch: string;
+  chainId: string;
   lastUpdated: string;
   details: string;
   updatedBy: string;
 };
 
 function DeploymentComponent(props: DeploymentProps) {
+  console.log(props.id);
+
   const query = api.deployments.getDeploymentStatus.useQuery(
     {
       deploymentId: props.id,
@@ -132,30 +136,23 @@ function DeploymentComponent(props: DeploymentProps) {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const chainName = Object.entries(DEPLOY_TO_CHAIN).find(
+    (x) => x[0] == props.chainId,
+  );
+
   return (
     <>
       <tr onClick={() => setIsOpen(!isOpen)}>
         <td className="whitespace-nowrap px-6 py-4">{props.id}</td>
-        <td className="whitespace-nowrap px-6 py-4">{props.env}</td>
-        <td className="whitespace-nowrap px-6 py-4">
+        <td className="whitespace-nowrap px-6 py-4">{chainName?.[1]}</td>
+        <td className="flex items-center gap-2 whitespace-nowrap px-6 py-4">
           {StatusToBadge(currentStatus)}
+          {currentStatus == "Building" && <Loader size={20}></Loader>}
         </td>
         <td className="whitespace-nowrap px-6 py-4">{props.branch}</td>
         <td className="whitespace-nowrap px-6 py-4">{props.lastUpdated}</td>
         <td className="whitespace-nowrap px-6 py-4">{props.details}</td>
-        <td className="whitespace-nowrap px-6 py-4">
-          <Collapsible>
-            <CollapsibleTrigger>
-              Can I use this in my project?
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              Yes. Free to use for personal and commercial projects. No
-              attribution required.
-            </CollapsibleContent>
-          </Collapsible>
-
-          {props.updatedBy}
-        </td>
+        <td className="whitespace-nowrap px-6 py-4">{props.updatedBy}</td>
         <td className="whitespace-nowrap px-6 py-4">
           <Popover>
             <PopoverTrigger>
@@ -165,7 +162,7 @@ function DeploymentComponent(props: DeploymentProps) {
           </Popover>
         </td>
       </tr>
-      {isOpen && <LogCollection></LogCollection>}
+      {isOpen && <LogCollection deploymentId={props.id}></LogCollection>}
     </>
   );
 }
@@ -175,43 +172,48 @@ type LogCollectionProps = {
 };
 
 function LogCollection(props: LogCollectionProps) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const logs = api.deployments.getDeploymentLogs.useQuery(
     {
       deploymentId: props.deploymentId,
     },
     {
-      refetchInterval: 3000,
+      // Consider enabling refetchInterval if you need live updates.
+      // refetchInterval: 10_000,
     },
   );
 
-  const logComponents = !logs.isLoading ? (
-    logs.data.logs.map((x) => {
-      return (
-        <DeploymentLog
-          key={x.id}
-          text={x.text}
-          timestamp={x.timestamp.toISOString()}
-        ></DeploymentLog>
-      );
-    })
-  ) : (
-    <></>
-  );
+  useEffect(() => {
+    if (scrollRef.current) {
+      // Wait for the next browser repaint to ensure the DOM is updated
+      setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        }
+      }, 0);
+    }
+  }, [logs.data]); // Dependency should be the data that triggers log rendering
+
+  if (logs.isLoading) {
+    return <Loader></Loader>; // Show loader while logs are loading
+  }
 
   return (
     <tr>
-      <td colSpan="100%" className="bg-slate-900 p-5">
+      <td colSpan={8} className="bg-slate-900 p-5">
         <h2 className="mb-10">Deployment Logs</h2>
-        <div className="flex max-h-40 flex-col gap-5 overflow-scroll  overflow-x-hidden rounded-md bg-slate-800 p-2">
-          {/* <DeploymentLog text="123" timestamp="123"></DeploymentLog>
-          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
-          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
-          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
-          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
-          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
-          <DeploymentLog text="123" timestamp="123"></DeploymentLog>
-          <DeploymentLog text="123" timestamp="123"></DeploymentLog> */}
-          {logComponents}
+        <div
+          ref={scrollRef}
+          className="flex max-h-40 flex-col gap-4 overflow-auto rounded-md bg-slate-800 p-2"
+        >
+          {logs.data?.logs.map((x) => (
+            <DeploymentLog
+              key={x.id}
+              text={x.text}
+              timestamp={x.timestamp.toISOString()}
+            ></DeploymentLog>
+          ))}
         </div>
       </td>
     </tr>
@@ -224,7 +226,11 @@ type LogProps = {
 };
 
 function DeploymentLog(props: LogProps) {
-  return <p>{props.text}</p>;
+  //const className = props.text.includes("ERR") ? "bg-red-400" : "";
+
+  const convert = new Convert();
+  const html = convert.toHtml(props.text);
+  return <p dangerouslySetInnerHTML={{ __html: html }}></p>;
 }
 
 function StatusToBadge(status: string) {

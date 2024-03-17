@@ -33,6 +33,7 @@ export const env = createEnv({
     PRIVATE_KEY_PATH: z.string(),
     GITHUB_ID: z.string(),
     GITHUB_SECRET: z.string(),
+    PRIVATE_KEY: z.string(),
   },
 
   /**
@@ -60,6 +61,7 @@ export const env = createEnv({
     PRIVATE_KEY_PATH: process.env.PRIVATE_KEY_PATH,
     GITHUB_ID: process.env.GITHUB_ID,
     GITHUB_SECRET: process.env.GITHUB_SECRET,
+    PRIVATE_KEY: process.env.PRIVATE_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

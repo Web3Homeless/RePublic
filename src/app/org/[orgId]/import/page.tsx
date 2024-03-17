@@ -17,20 +17,25 @@ import {
 } from "~/components/ui/select";
 import { Button } from "~/components/ui/button";
 import { api } from "~/trpc/react";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import OrgNavbar from "~/components/core/organisation/org-navbar";
 import UpperNavbar from "~/components/core/upper-navbar";
 import AppLoader from "~/components/common/app-loader";
+import Link from "next/link";
+import { GitBranchPlus, GitCommit } from "lucide-react";
 
 export default function Page({
   params,
 }: {
   params: { orgId: string; projectId: string };
 }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
 
   const repoName = searchParams.get("repo")! as string;
   const repoOwner = searchParams.get("owner")! as string;
+
+  const utils = api.useUtils();
 
   const { data: repoData, isLoading: repoLoading } =
     api.github.getRepoById.useQuery({
@@ -46,11 +51,15 @@ export default function Page({
   console.log("repodata", repoData);
   console.log("data", data);
 
-  const onDeployClick = () => {
+  const onDeployClick = async () => {
     createProjectMutation.mutate({
       owner: repoOwner,
       repo: repoName,
     });
+
+    utils;
+    await utils.project.invalidate();
+    router.push(`/org/${params.orgId}/projects`);
   };
 
   return (
@@ -58,10 +67,13 @@ export default function Page({
       <UpperNavbar orgName={params.orgId} projectName=""></UpperNavbar>
       <div className="min-h-screen bg-[#121212] text-white">
         <div className="mx-auto max-w-6xl px-4 py-8">
-          <div className="mb-8 flex items-center">
-            <ChevronLeftIcon className="h-6 w-6 text-gray-400" />
-            <span className="ml-2 text-sm">Back</span>
-          </div>
+          <Link href={`/org/${params.orgId}/projects`}>
+            <div className="mb-8 flex items-center">
+              <ChevronLeftIcon className="h-6 w-6 text-gray-400" />
+              <span className="ml-2 text-sm">Back</span>
+            </div>
+          </Link>
+
           <h1 className="mb-2 text-3xl font-bold">You're almost done.</h1>
           <p className="mb-8 text-gray-400">
             Please follow the steps to configure your Project and deploy it.
@@ -73,26 +85,31 @@ export default function Page({
               <div className="w-64 pr-8">
                 <div className="mb-4 flex items-center">
                   <GlobeIcon className="h-8 w-8 text-gray-400" />
-                  <span className="ml-2">notes.goose.com</span>
+                  <span className="ml-2">Next big thing</span>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center">
                     <div className="mr-2 h-2 w-2 rounded-full bg-white" />
                     <span>Configure Project</span>
                   </div>
-                  <div className="ml-4 flex items-center">
+                  <div className="flex items-center">
                     <div className="mr-2 h-2 w-2 rounded-full bg-gray-600" />
                     <span>Deploy</span>
                   </div>
                 </div>
                 <div className="mt-8 border-t border-gray-600 pt-4">
                   <div className="mb-2 flex items-center">
-                    <GitBranchIcon className="h-6 w-6 text-gray-400" />
-                    <span className="ml-2">defaultgoose/notes.goose.com</span>
+                    <GitCommit className="h-6 w-6 text-gray-400" />
+                    <span className="ml-2">
+                      {repoData?.repo.data.owner.login}/
+                      {repoData?.repo.data.name}
+                    </span>
                   </div>
                   <div className="mb-2 flex items-center">
                     <GitBranchIcon className="h-6 w-6 text-gray-400" />
-                    <span className="ml-2">main</span>
+                    <span className="ml-2">
+                      {repoData?.repo.data.default_branch}
+                    </span>
                   </div>
                   <div className="flex items-center">
                     <FolderIcon className="h-6 w-6 text-gray-400" />
@@ -147,9 +164,16 @@ export default function Page({
                               className="bg-[#333]"
                               position="popper"
                             >
-                              <SelectItem value="next">
-                                Arbitrum Stylus RUST
+                              <SelectItem value="arbitrumrust">
+                                Arbitrum Stylus Rust
                               </SelectItem>
+                              <SelectItem value="nearrust">
+                                Near Rust
+                              </SelectItem>
+                              <SelectItem value="nearts">
+                                Near Typescript
+                              </SelectItem>
+                              <SelectItem value="solidity">Solidity</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -182,9 +206,9 @@ export default function Page({
                   <CardFooter className="flex justify-end">
                     <Button
                       disabled={isLoading}
-                      onClick={() => onDeployClick()}
+                      onClick={async () => await onDeployClick()}
                     >
-                      Deploy
+                      Create Project
                     </Button>
                   </CardFooter>
                 </Card>

@@ -100,10 +100,11 @@ model UserDeployment {
 }
 
 model UserProject {
-    id       String @id @default(cuid())
-    user_id  String 
-    owner    String
-    repoName String
+    id        String @id @default(cuid())
+    user_id   String 
+    owner     String
+    repoName  String
+    createdAt DateTime @default(now())
 }
 
 model BranchMapper {
@@ -122,6 +123,6 @@ model DeploymentOutbox {
 model DeploymentLog {
     id           String @id @default(cuid())
     timestamp    DateTime
-    text         String
+    text         String @db.LongText
     deploymentId String
 }

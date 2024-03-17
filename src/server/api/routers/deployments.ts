@@ -3,6 +3,26 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const deploymentsRouter = createTRPCRouter({
+  tryCreateDeploymentOnGh: publicProcedure
+    .input(z.object({ repoName: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const res = await ctx.db.deploymentOutbox.findMany({});
+
+      const projMap = await ctx.db.userDeployment.findMany({
+        where: {
+          id: {
+            in: res.map((x) => x.deploymentId),
+          },
+        },
+      });
+
+      console.log(res);
+
+      return {
+        deployments: res,
+      };
+    }),
+
   getAllDeployments: publicProcedure
     .input(z.object({ repoName: z.string() }))
     .query(async ({ ctx, input }) => {

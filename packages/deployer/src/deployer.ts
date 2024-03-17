@@ -10,6 +10,7 @@ import fs from 'fs';
 import { guessProjectType } from './lib/project_type_guesser.js';
 import { deployNearRustProject } from './deployers/near_rust_deployer.js';
 import { deployStylusProject } from './deployers/stylus_deployer.js';
+import { deployNearEvmProject } from './deployers/near_evm_deployer.js';
 
 const worker = async () => {
   const task = await db.userDeployment.findFirst({
@@ -54,8 +55,13 @@ const worker = async () => {
         projectZip: archName,
         taskId: task.id,
       });
+    } else if (task.chainId == '11155111') {
+      deployment = await deployNearEvmProject({
+        projectZip: archName,
+        taskId: task.id,
+      });
     } else {
-      throw Error('');
+      throw Error('Incorrect chain');
     }
 
     await db.deploymentOutbox.create({
@@ -75,7 +81,7 @@ const worker = async () => {
       },
     });
   } catch (e) {
-    console.log(e);
+    console.log('Error', e);
     await db.userDeployment.update({
       data: {
         status: 'Failed',
@@ -86,8 +92,6 @@ const worker = async () => {
     });
   }
 };
-
-const deployHardhatProject = async () => {};
 
 // eslint-disable-next-line max-len
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, @typescript-eslint/no-floating-promises
@@ -105,14 +109,16 @@ yargs(hideBin(process.argv))
     }
   )
   .command(
-    'deployHardhatFile [projectZip]',
+    'deployHardhatProject [projectZip]',
     'Deploys specified hardhat project',
     {
       projectZip: {
         default: 'data/test-solidity.zip',
       },
     },
-    deployHardhatProject
+    async (argv: { projectZip: string }) => {
+      await deployNearEvmProject(argv);
+    }
   )
   .command('worker', 'Runs worker', worker)
 

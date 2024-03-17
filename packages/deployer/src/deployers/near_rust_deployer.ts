@@ -131,7 +131,7 @@ export const deployNearRustProject = async (argv: {
           console.log(`Deploy stderr: ${data}`);
         });
         deployTask.on('close', (code) => {
-          reject(null);
+          // reject(null);
         });
       });
     });

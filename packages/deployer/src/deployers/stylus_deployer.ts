@@ -102,15 +102,6 @@ export const deployStylusProject = async (argv: {
           console.log('[Found contract addr]', activatingOnAddressMatch[1]);
           contractAddr = activatingOnAddressMatch[1];
         }
-
-        // const re = /could not compile (.*)/g;
-        // const r = re.exec(data);
-        // if (r) {
-        //   console.log('[Error]', r[1]);
-        //   reject({
-        //     error: r[1],
-        //   });
-        // }
       });
 
       buildTask.stderr.on('data', async (data) => {
@@ -124,6 +115,12 @@ export const deployStylusProject = async (argv: {
           }));
 
         console.log(`stderr: ${data}`);
+
+        if (/could not compile/g.exec(data)) {
+          reject({
+            error: '',
+          });
+        }
       });
 
       buildTask.on('exit', (code) => {
